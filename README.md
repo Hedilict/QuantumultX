@@ -12,7 +12,7 @@
 
 ## 1.脚本本地化配置:
 
-##### 1⃣️在本地建立文件夹
+#### 1⃣️在本地建立文件夹
 目录 iCloud Drive/QuantumultX/Scripts/nzw9314
 
 或者 我的iPhone/QuantumultX/Scripts/nzw9314
