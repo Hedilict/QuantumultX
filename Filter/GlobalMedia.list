@@ -1,0 +1,189 @@
+# (GlobalMedia)
+# (Music)
+# > Deezer
+USER-AGENT,Deezer*,GlobalMedia
+DOMAIN-SUFFIX,deezer.com,GlobalMedia
+DOMAIN-SUFFIX,dzcdn.net,GlobalMedia
+# > KKBOX
+DOMAIN-SUFFIX,kkbox.com,GlobalMedia
+DOMAIN-SUFFIX,kkbox.com.tw,GlobalMedia
+DOMAIN-SUFFIX,kfs.io,GlobalMedia
+# > JOOX
+USER-AGENT,WeMusic*,GlobalMedia
+USER-AGENT,JOOX*,GlobalMedia
+DOMAIN-SUFFIX,joox.com,GlobalMedia
+# > Pandora
+USER-AGENT,Pandora*,GlobalMedia
+DOMAIN-SUFFIX,pandora.com,GlobalMedia
+# > SoundCloud
+USER-AGENT,SoundCloud*,GlobalMedia
+DOMAIN-SUFFIX,p-cdn.us,GlobalMedia
+DOMAIN-SUFFIX,sndcdn.com,GlobalMedia
+DOMAIN-SUFFIX,soundcloud.com,GlobalMedia
+# > Spotify
+USER-AGENT,Spotify*,GlobalMedia
+DOMAIN-SUFFIX,pscdn.co,GlobalMedia
+DOMAIN-SUFFIX,scdn.co,GlobalMedia
+DOMAIN-SUFFIX,spotify.com,GlobalMedia
+DOMAIN-SUFFIX,spoti.fi,GlobalMedia
+# > TIDAL
+USER-AGENT,TIDAL*,GlobalMedia
+DOMAIN-SUFFIX,tidal.com,GlobalMedia
+# > YoutubeMusic
+USER-AGENT,com.google.ios.youtubemusic*,GlobalMedia
+USER-AGENT,YouTubeMusic*,GlobalMedia
+# (Video)
+# > All4
+USER-AGENT,All4*,GlobalMedia
+DOMAIN-SUFFIX,c4assets.com,GlobalMedia
+DOMAIN-SUFFIX,channel4.com,GlobalMedia
+# > AbemaTV
+USER-AGENT,AbemaTV*,GlobalMedia
+DOMAIN-SUFFIX,abema.io,GlobalMedia
+DOMAIN-SUFFIX,abema.tv,GlobalMedia
+DOMAIN-SUFFIX,ameba.jp,GlobalMedia
+DOMAIN-SUFFIX,hayabusa.io,GlobalMedia
+DOMAIN,abematv.akamaized.net,GlobalMedia
+DOMAIN,ds-linear-abematv.akamaized.net,GlobalMedia
+DOMAIN,ds-vod-abematv.akamaized.net,GlobalMedia
+DOMAIN,linear-abematv.akamaized.net,GlobalMedia
+# > Amazon Prime Video
+USER-AGENT,InstantVideo.US*,GlobalMedia
+USER-AGENT,Prime%20Video*,GlobalMedia
+DOMAIN-SUFFIX,primevideo.com,GlobalMedia
+# > Bahamut
+USER-AGENT,Anime*,GlobalMedia
+DOMAIN-SUFFIX,bahamut.com.tw,GlobalMedia
+DOMAIN-SUFFIX,gamer.com.tw,GlobalMedia
+DOMAIN,gamer-cds.cdn.hinet.net,GlobalMedia
+DOMAIN,gamer2-cds.cdn.hinet.net,GlobalMedia
+# > BBC iPlayer
+USER-AGENT,BBCiPlayer*,GlobalMedia
+DOMAIN-SUFFIX,bbc.co.uk,GlobalMedia
+DOMAIN-SUFFIX,bbci.co.uk,GlobalMedia
+DOMAIN-KEYWORD,bbcfmt,GlobalMedia
+DOMAIN-KEYWORD,uk-live,GlobalMedia
+# > DAZN
+USER-AGENT,DAZN*,GlobalMedia
+DOMAIN-SUFFIX,dazn.com,GlobalMedia
+# > encoreTVB
+USER-AGENT,encoreTVB*,GlobalMedia
+DOMAIN-SUFFIX,encoretvb.com,GlobalMedia
+DOMAIN,edge.api.brightcove.com,GlobalMedia
+DOMAIN,bcbolt446c5271-a.akamaihd.net,GlobalMedia
+# > Fox+ & Fox Now
+USER-AGENT,FOX%20NOW*,GlobalMedia
+USER-AGENT,FOXPlus*,GlobalMedia
+DOMAIN-SUFFIX,dashasiafox.akamaized.net,GlobalMedia
+DOMAIN-SUFFIX,fox.com,GlobalMedia
+DOMAIN-SUFFIX,foxdcg.com,GlobalMedia
+DOMAIN-SUFFIX,foxplus.com,GlobalMedia
+DOMAIN-SUFFIX,staticasiafox.akamaized.net,GlobalMedia
+DOMAIN-SUFFIX,theplatform.com,GlobalMedia
+DOMAIN-SUFFIX,uplynk.com,GlobalMedia
+# > HBO Now & HBO GO
+USER-AGENT,HBO%20NOW*,GlobalMedia
+USER-AGENT,HBO%20GO*,GlobalMedia
+USER-AGENT,HBOAsia*,GlobalMedia
+DOMAIN-SUFFIX,hbo.com,GlobalMedia
+DOMAIN-SUFFIX,hbogo.com,GlobalMedia
+DOMAIN-SUFFIX,hboasia.com,GlobalMedia
+DOMAIN-SUFFIX,hbogo.com,GlobalMedia
+DOMAIN-SUFFIX,hbogoasia.hk,GlobalMedia
+DOMAIN,44wilhpljf.execute-api.ap-southeast-1.amazonaws.com,GlobalMedia
+DOMAIN,bcbolthboa-a.akamaihd.net,GlobalMedia
+DOMAIN,cf-images.ap-southeast-1.prod.boltdns.net,GlobalMedia
+DOMAIN,manifest.prod.boltdns.net,GlobalMedia
+DOMAIN,s3-ap-southeast-1.amazonaws.com,GlobalMedia
+# > 华文电视
+USER-AGENT,HWTVMobile*,GlobalMedia
+DOMAIN-SUFFIX,5itv.tv,GlobalMedia
+DOMAIN-SUFFIX,ocnttv.com,GlobalMedia
+# > Hulu
+DOMAIN-SUFFIX,hulu.com,GlobalMedia
+DOMAIN-SUFFIX,huluim.com,GlobalMedia
+DOMAIN-SUFFIX,hulustream.com,GlobalMedia
+# > Hulu(フールー)
+DOMAIN-SUFFIX,happyon.jp,GlobalMedia
+DOMAIN-SUFFIX,hulu.jp,GlobalMedia
+# > ITV
+USER-AGENT,ITV_Player*,GlobalMedia
+DOMAIN-SUFFIX,itv.com,GlobalMedia
+DOMAIN-SUFFIX,itvstatic.com,GlobalMedia
+DOMAIN,itvpnpmobile-a.akamaihd.net,GlobalMedia
+# > KKTV
+USER-AGENT,KKTV*,GlobalMedia
+USER-AGENT,com.kktv.ios.kktv*,GlobalMedia
+DOMAIN-SUFFIX,kktv.com.tw,GlobalMedia
+DOMAIN-SUFFIX,kktv.me,GlobalMedia
+DOMAIN,kktv-theater.kk.stream,GlobalMedia
+# > Line TV
+USER-AGENT,LINE%20TV*,GlobalMedia
+DOMAIN-SUFFIX,linetv.tw,GlobalMedia
+DOMAIN,d3c7rimkq79yfu.cloudfront.net,GlobalMedia
+# > LiTV
+DOMAIN-SUFFIX,litv.tv,GlobalMedia
+DOMAIN,litvfreemobile-hichannel.cdn.hinet.net,GlobalMedia
+# > My5
+USER-AGENT,My5*,GlobalMedia
+DOMAIN-SUFFIX,channel5.com,GlobalMedia
+DOMAIN-SUFFIX,my5.tv,GlobalMedia
+DOMAIN,d349g9zuie06uo.cloudfront.net,GlobalMedia
+# > myTV_SUPER
+USER-AGENT,mytv*,GlobalMedia
+DOMAIN-SUFFIX,mytvsuper.com,GlobalMedia
+DOMAIN-SUFFIX,tvb.com,GlobalMedia
+# > Netflix
+USER-AGENT,Argo*,GlobalMedia
+DOMAIN-SUFFIX,netflix.com,GlobalMedia
+DOMAIN-SUFFIX,netflix.net,GlobalMedia
+DOMAIN-SUFFIX,nflxext.com,GlobalMedia
+DOMAIN-SUFFIX,nflximg.com,GlobalMedia
+DOMAIN-SUFFIX,nflximg.net,GlobalMedia
+DOMAIN-SUFFIX,nflxso.net,GlobalMedia
+DOMAIN-SUFFIX,nflxvideo.net,GlobalMedia
+IP-CIDR,23.246.0.0/18,GlobalMedia
+IP-CIDR,37.77.184.0/21,GlobalMedia
+IP-CIDR,45.57.0.0/17,GlobalMedia
+IP-CIDR,64.120.128.0/17,GlobalMedia
+IP-CIDR,66.197.128.0/17,GlobalMedia
+IP-CIDR,108.175.32.0/20,GlobalMedia
+IP-CIDR,192.173.64.0/18,GlobalMedia
+IP-CIDR,198.38.96.0/19,GlobalMedia
+IP-CIDR,198.45.48.0/20,GlobalMedia
+# > niconico
+USER-AGENT,Niconico,GlobalMedia
+DOMAIN-SUFFIX,dmc.nico,GlobalMedia
+DOMAIN-SUFFIX,nicovideo.jp,GlobalMedia
+DOMAIN-SUFFIX,nimg.jp,GlobalMedia
+DOMAIN-SUFFIX,socdm.com,GlobalMedia
+# > PBS
+USER-AGENT,PBS*,GlobalMedia
+DOMAIN-SUFFIX,pbs.org,GlobalMedia
+# > Pornhub
+DOMAIN-SUFFIX,phncdn.com,GlobalMedia
+DOMAIN-SUFFIX,pornhub.com,GlobalMedia
+DOMAIN-SUFFIX,pornhubpremium.com,GlobalMedia
+# > 台湾好
+USER-AGENT,TaiwanGood*,GlobalMedia
+DOMAIN-SUFFIX,skyking.com.tw,GlobalMedia
+DOMAIN,hamifans.emome.net,GlobalMedia
+# > Twitch
+DOMAIN-SUFFIX,twitch.tv,GlobalMedia
+DOMAIN-SUFFIX,twitchcdn.net,GlobalMedia
+DOMAIN-SUFFIX,ttvnw.net,GlobalMedia
+# > ViuTV
+USER-AGENT,Viu*,GlobalMedia
+USER-AGENT,ViuTV*,GlobalMedia
+DOMAIN-SUFFIX,viu.com,GlobalMedia
+DOMAIN-SUFFIX,viu.tv,GlobalMedia
+DOMAIN,api.viu.now.com,GlobalMedia
+DOMAIN,d1k2us671qcoau.cloudfront.net,GlobalMedia
+DOMAIN,d2anahhhmp1ffz.cloudfront.net,GlobalMedia
+DOMAIN,dfp6rglgjqszk.cloudfront.net,GlobalMedia
+# > Youtube
+USER-AGENT,com.google.ios.youtube*,GlobalMedia
+USER-AGENT,YouTube*,GlobalMedia
+DOMAIN-SUFFIX,googlevideo.com,GlobalMedia
+DOMAIN-SUFFIX,youtube.com,GlobalMedia
+DOMAIN,youtubei.googleapis.com,GlobalMedia
