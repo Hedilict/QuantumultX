@@ -24,7 +24,7 @@
 (挂载教程: https://www.notion.so/iCloud-Github-948f19e65e1a47b3b468451491a3f34b)
 
 #### 3⃣️订阅我的[rewrite_remote]
-①.Js_local_WorkingCopy.conf(本地脚本订阅) : 
+①.🎉 Js_local_WorkingCopy.conf(本地脚本订阅) : 
 
 https://raw.githubusercontent.com/Hedilict/QuantumultX/master/Js_local_WorkingCopy.conf
 
