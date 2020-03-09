@@ -73,7 +73,11 @@ Filter文件夹中收集了常用的过滤规则。
 
 ## 5.配置文件
 
-默认的配置文件包含以下功能：
+如果你是小白用户，欢迎下载我的配置文件：https://raw.githubusercontent.com/Hedilict/QuantumultX/master/Quantumult.conf
+
+在QuantumultX的【配置文件】板块点击【下载】，输入上面的地址后点击怕【确定】即可。
+
+该默认的配置文件包含以下功能：
 + 解锁港区tiktok
 + 网易云解锁节点
 + 常见的过滤规则
