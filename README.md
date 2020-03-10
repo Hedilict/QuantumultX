@@ -84,3 +84,11 @@ Filter文件夹中收集了常用的过滤规则。
 + 远程复写订阅（本项目、神机）
 + 免费可用节点（持续更新）
 
+>同步库地址：
+
++ chavyleung: https://github.com/chavyleung/scripts.git
++ NobyDa: https://github.com/NobyDa/Script.git
++ yichahucha: https://github.com/yichahucha/surge.git
++ saz34: https://github.com/sazs34/TaskConfig.git
++ langkhach270389: https://github.com/langkhach270389/Scripting.git
++ Choler: https://github.com/Choler/Surge.git
