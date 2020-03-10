@@ -25,7 +25,7 @@ app.nio.com
 # ^https:\/\/app\.nio\.com\/api\/1\/app\/daily_checkin url script-request-header nio.cookie.js
 
 # [TestFlight] QuanX v1.0.6-build195 及以后版本
-^https:\/\/app\.nio\.com\/api\/1\/app\/daily_checkin url script-request-header https://raw.githubusercontent.com/chavyleung/scripts/master/nip/nio.cookie.js
+^https:\/\/app\.nio\.com\/api\/1\/app\/daily_checkin url script-request-header https://raw.githubusercontent.com/chavyleung/scripts/master/nio/nio.cookie.js
 
 [task_local]
 1 0 * * * nio.js
