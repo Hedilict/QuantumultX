@@ -1,17 +1,19 @@
-const cookieName = '蔚来'
-const signurlKey = 'signurl_nextevcar'
-const signheaderKey = 'signheader_nextevcar'
-const nextevcar = init()
-
-if ($request && $request.method == 'POST') {
-  const signurlVal = $request.url
-  const signheaderVal = JSON.stringify($request.headers)
-  
-  if (signurlVal) nextevcar.setdata(signurlVal, signurlKey)
-  if (signheaderVal) nextevcar.setdata(signheaderVal, signheaderKey)
-  nextevcar.msg(cookieName, `获取Cookie: 成功`, ``)
-}
-
+const cookieName = '京东到家'
+const signurlKey = 'chen_signurl_jddj'
+const signheaderKey = 'chen_signheader_jddj'
+const chen = init()
+const requrl = $request.url
+  if (this.$request) {
+    const signurlVal = requrl
+    const signheaderVal = JSON.stringify($request.headers)
+    chen.log(`URL:${signurlVal}`)
+    const flag = requrl.includes('userSigninNew')
+    if (flag) {
+      chen.setdata(signurlVal, signurlKey)
+      chen.setdata(signheaderVal, signheaderKey)
+      chen.msg(cookieName, `获取Cookie: 成功`, ``)
+    }
+  }
 function init() {
   isSurge = () => {
     return undefined === this.$httpClient ? false : true
@@ -50,18 +52,9 @@ function init() {
       $task.fetch(url).then((resp) => cb(null, {}, resp.body))
     }
   }
-  put = (url, cb) => {
-    if (isSurge()) {
-      $httpClient.put(url, cb)
-    }
-    if (isQuanX()) {
-      url.method = 'PUT'
-      $task.fetch(url).then((resp) => cb(null, {}, resp.body))
-    }
-  }
   done = (value = {}) => {
     $done(value)
   }
-  return { isSurge, isQuanX, msg, log, getdata, setdata, get, post, put, done }
+  return { isSurge, isQuanX, msg, log, getdata, setdata, get, post, done }
 }
-nextevcar.done()
+chen.done()

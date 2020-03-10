@@ -76,8 +76,8 @@ if (url.indexOf(path2) != -1) {
                     } else {
                         let vertical = value.vertical
                         if (vertical && vertical.hasOwnProperty("tmallhkDirectSale")) {
-                            value["tradeConsumerProtection"] = customTradeConsumerProtection()
-                            value.tradeConsumerProtection = setTradeConsumerProtection(data, value.tradeConsumerProtection)
+                            $done({ body })
+                            sendNotify(data, shareUrl)
                         } else {
                             consumerProtection = setConsumerProtection(data, consumerProtection)
                         }
@@ -304,7 +304,6 @@ function customTradeConsumerProtection() {
 }
 
 function Qs2Json(url) {
-    url = url == null ? window.location.href : url;
     var search = url.substring(url.lastIndexOf("?") + 1);
     var obj = {};
     var reg = /([^?&=]+)=([^?&=]*)/g;

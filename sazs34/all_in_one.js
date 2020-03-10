@@ -4,7 +4,7 @@ const global = {
     sign: { //用于设置哪些需要进行签到,哪些不处理
         baidu_tieba: true,
         iqiyi: true,
-        _52pojie: false,
+        _52pojie: true,
         netease_music: true,
         v2ex: true,
         china_telecom: true,

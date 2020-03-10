@@ -5,7 +5,7 @@ https://github.com/sazs34/TaskConfig/blob/master/assets/weather_pro.md
 let config = {
     darksky_api: "填这里", //从https://darksky.net/dev/ 上申请key填入即可
     aqicn_api: "填这里", //从http://aqicn.org/data-platform/token/#/ 上申请key填入即可
-    huweather_apiKey: "填这里", //和风天气APIkey,可自行前往 https://dev.heweather.com/ 进行获取(注意key类型选WebApi)
+    huweather_apiKey: "填这里", //和风天气APIkey,可自行前往 https://dev.heweather.com/ 进行获取
     lat_lon: "填这里", //请填写经纬度,直接从谷歌地图中获取即可
     lang: "zh", //语言,随意切换为您想要的语言哦(zh/zh-tw/ja/en/fr/...)
     log: 0, //调试日志,0为不开启,1为开启,2为开启精简日志
@@ -13,7 +13,7 @@ let config = {
     show: {
         //普通每天的
         template: {
-            title: `[天气日报] $[city]$[district]  •  $[summary]`,
+            title: `[天气日报] $[summary]`,
             subtitle: `$[weatherIcon]$[weather] $[temperatureMin] ~ $[temperatureMax]°C ☔️降雨概率 $[precipProbability]%`,
             detail: `🥵空气质量 $[aqi]($[aqiDesc]) 🍃风速$[windSpeed]km/h $[windDir]
 🌞紫外线指数 $[uv]($[uvDesc]) 💧湿度$[currentHumidity]%
@@ -22,7 +22,7 @@ let config = {
 [生活指数]
 $[lifeStyle($[icon][$[brf]]$[txt])]
 
-[天气周报] • $[weeklySummary]
+[天气周报]
 $[daily($[month]月$[day]日  $[temperatureLow]~$[temperatureHigh]°C  $[weatherIcon]$[weather])]`
         },
         lifestyle: { //此处用于显示各项生活指数，可自行调整顺序，顺序越在前面则显示也会靠前，如果您不想查看某一指数，置为false即可，想看置为true即可

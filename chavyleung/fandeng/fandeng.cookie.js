@@ -1,15 +1,21 @@
-const cookieName = '蔚来'
-const signurlKey = 'signurl_nextevcar'
-const signheaderKey = 'signheader_nextevcar'
-const nextevcar = init()
+const cookieName = '樊登读书'
+const signurlKey = 'senku_signurl_pandeng'
+const signheaderKey = 'senku_signheader_pandeng'
+const signbodyKey = 'senku_signbody_pandeng'
+const senku = init()
 
-if ($request && $request.method == 'POST') {
-  const signurlVal = $request.url
+const requrl = $request.url
+if ($request && $request.method != 'OPTIONS') {
+  const signurlVal = requrl
   const signheaderVal = JSON.stringify($request.headers)
-  
-  if (signurlVal) nextevcar.setdata(signurlVal, signurlKey)
-  if (signheaderVal) nextevcar.setdata(signheaderVal, signheaderKey)
-  nextevcar.msg(cookieName, `获取Cookie: 成功`, ``)
+  const signbodyVal = $request.body
+  senku.log(`signurlVal:${signurlVal}`)
+  senku.log(`signheaderVal:${signheaderVal}`)
+  senku.log(`signbodyVal:${signbodyVal}`)
+  if (signurlVal) senku.setdata(signurlVal, signurlKey)
+  if (signheaderVal) senku.setdata(signheaderVal, signheaderKey)
+  if (signbodyVal) senku.setdata(signbodyVal, signbodyKey)
+  senku.msg(cookieName, `获取Cookie: 成功`, ``)
 }
 
 function init() {
@@ -50,18 +56,9 @@ function init() {
       $task.fetch(url).then((resp) => cb(null, {}, resp.body))
     }
   }
-  put = (url, cb) => {
-    if (isSurge()) {
-      $httpClient.put(url, cb)
-    }
-    if (isQuanX()) {
-      url.method = 'PUT'
-      $task.fetch(url).then((resp) => cb(null, {}, resp.body))
-    }
-  }
   done = (value = {}) => {
     $done(value)
   }
-  return { isSurge, isQuanX, msg, log, getdata, setdata, get, post, put, done }
+  return { isSurge, isQuanX, msg, log, getdata, setdata, get, post, done }
 }
-nextevcar.done()
+senku.done()

@@ -1,45 +1,51 @@
-# 蔚来
+# 樊登读书
 
 > 代码已同时兼容 Surge & QuanX, 使用同一份签到脚本即可
-> 感谢[@danchaw](https://github.com/danchaw) PR
+
+> QuanX 需要: v1.0.6-build195 及以后版本 (TestFlight)
+
+> 感谢 [@GideonSenku](https://github.com/GideonSenku) Commit
+
 ## 配置 (Surge)
 
 ```properties
 [MITM]
-app.nio.com
+api.dushu.io
 
 [Script]
-http-request ^https:\/\/app\.nio\.com\/api\/1\/app\/daily_checkin script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/nio/nio.cookie.js
-cron "10 0 0 * * *" script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/nio/nio.js
+http-request ^https://api\.dushu\.io/CheckIn script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/fandeng/fandeng.cookie.js, requires-body=true
+
+cron "10 0 0 * * *" script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/fandeng/fandeng.js
 ```
 
 ## 配置 (QuanX)
 
 ```properties
 [MITM]
-app.nio.com
+api.dushu.io
 
 [rewrite_local]
 
 # [商店版] QuanX v1.0.6-build194 及更早版本
-# ^https:\/\/app\.nio\.com\/api\/1\/app\/daily_checkin url script-request-header nio.cookie.js
+# 不支持
 
 # [TestFlight] QuanX v1.0.6-build195 及以后版本
-^https:\/\/app\.nio\.com\/api\/1\/app\/daily_checkin url script-request-header https://raw.githubusercontent.com/chavyleung/scripts/master/nip/nio.cookie.js
+^https://api\.dushu\.io/CheckIn url script-request-body https://raw.githubusercontent.com/chavyleung/scripts/master/fandeng/fandeng.cookie.js
 
 [task_local]
-1 0 * * * nio.js
+1 0 * * * fandeng.js
 ```
 
 ## 说明
 
-1. 先把`app.nio.com`加到`[MITM]`
+1. 先把`api.dushu.io`加到`[MITM]`
 2. 再配置重写规则:
    - Surge: 把两条远程脚本放到`[Script]`
-   - QuanX: 把`nio.cookie.js`和`nio.js`传到`On My iPhone - Quantumult X - Scripts` (传到 iCloud 相同目录也可, 注意要打开 quanx 的 iCloud 开关)
-3. 打开 APP[蔚来](https://apps.apple.com/cn/app/%E8%94%9A%E6%9D%A5/id1116095987) 然后手动签到 1 次, 系统提示: `获取Cookie: 成功`
-4. 最后就可以把第 1 条脚本注释掉了
-5. 运行一次脚本, 如果提示重复签到, 那就算成功了!
+   - QuanX: 把`fandeng.cookie.js`和`fandeng.js`传到`On My iPhone - Quantumult X - Scripts` (传到 iCloud 相同目录也可, 注意要打开 quanx 的 iCloud 开关)
+3. 打开 APP 手动签到一次: 访问下右下角 `我的` > `签到`
+4. 系统提示: `获取Cookie: 成功`
+5. 把获取 Cookie 的脚本注释掉
+6. 运行一次脚本, 如果提示重复签到, 那就算成功了!
 
 > 第 1 条脚本是用来获取 cookie 的, 用浏览器访问一次获取 cookie 成功后就可以删掉或注释掉了, 但请确保在`登录成功`后再获取 cookie.
 
@@ -95,4 +101,4 @@ app.nio.com
 
 [@ConnersHua](https://github.com/ConnersHua)
 
-[@danchaw](https://github.com/danchaw)
+[@GideonSenku](https://github.com/GideonSenku)
