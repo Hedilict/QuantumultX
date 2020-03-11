@@ -3,7 +3,7 @@ Remove weibo ads
 ```
 [Script]
 http-response ^https?://(sdk|wb)app\.uve\.weibo\.com(/interface/sdk/sdkad.php|/wbapplua/wbpullad.lua) requires-body=1,script-path=https://raw.githubusercontent.com/yichahucha/surge/master/wb_launch.js
-http-response ^https?://m?api\.weibo\.c(n|om)/2/(statuses/(unread|extend|positives/get|(friends|video)(/|_)timeline)|stories/(video_stream|home_list)|(groups|fangle)/timeline|profile/statuses|comments/build_comments|photo/recommend_list|service/picfeed|searchall|cardlist|page|!/photos/pic_recommend_status) requires-body=1,script-path=https://raw.githubusercontent.com/yichahucha/surge/master/wb_ad.js
+http-response ^https?://m?api\.weibo\.c(n|om)/2/(statuses/(unread|extend|positives/get|(friends|video)(/|_)(mix)?timeline)|stories/(video_stream|home_list)|(groups|fangle)/timeline|profile/statuses|comments/build_comments|photo/recommend_list|service/picfeed|searchall|cardlist|page|!/photos/pic_recommend_status) requires-body=1,script-path=https://raw.githubusercontent.com/yichahucha/surge/master/wb_ad.js
 [MITM]
 hostname = api.weibo.cn, mapi.weibo.com, *.uve.weibo.com
 ```
@@ -110,8 +110,38 @@ DingDing clock in
 0 9,18 * * 1-5 clock_in.js
 ```
 
+
 Script management tool
+
+简单使用示例
+
+1.设置定时任务更新脚本，第一次需手动更新，确保脚本更新成功
+
 ```
 [task_local]
 0 0 * * * eval_script.js
 ```
+
+
+2.在 eval_script.js 中配置需要管理的脚本，可以配置远程和配置本地，提供一个远程示例
+
+```
+
+远程格式为: ####匹配正则 eval 脚本连接
+本地格式为: 匹配正则 eval 脚本连接
+
+[eval_remote]
+https://raw.githubusercontent.com/yichahucha/surge/master/sub_script.conf
+
+[eval_local]
+// custom local...
+
+```
+
+3.添加复写订阅，更新复写订阅
+
+```
+[rewrite_remote]
+https://raw.githubusercontent.com/yichahucha/surge/master/sub_script.conf, tag=eval, enabled=true
+```
+4.以上都配置好，脚本生效
