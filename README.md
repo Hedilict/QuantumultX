@@ -1,6 +1,6 @@
 # QuantumultX
 
->此项目fork了nzw9314进行整理的脚本，原作者已停止更新。
+>此项目fork了nzw9314进行整理的脚本。nzw9314恢复更新啦！https://github.com/nzw9314/QuantumultX/tree/master
 
 只是搬运和同步更新大佬脚本
 
