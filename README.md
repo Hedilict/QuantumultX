@@ -92,3 +92,4 @@ Filter文件夹中收集了常用的过滤规则。
 + saz34: https://github.com/sazs34/TaskConfig.git
 + langkhach270389: https://github.com/langkhach270389/Scripting.git
 + Choler: https://github.com/Choler/Surge.git
++ NavePnow: https://github.com/NavePnow/Profiles.git
