@@ -1,35 +1,33 @@
-const cookieName ='京东到家'
-const cookieKey = 'chen_cookie_dj'
+const cookieName ='京东成长分'
+const cookieKey = 'chen_cookie_jingdong'
 const chen = init()
-const cookieVal = chen.getdata(cookieKey);
+let cookieVal = chen.getdata(cookieKey)
 sign()
 function sign() {
-    let url = {url: 'https://daojia.jd.com/client?functionId=signin%2FuserSigninNew&body=%7B%7D',
-    headers: { Cookie:cookieVal}}
-   
+    let url = {url: 'https://ms.jr.jd.com/gw/generic/bt/h5/m/doSign?',headers: { Cookie:cookieVal}}
+    url.headers['Origin'] = 'https://btfront.jd.com'
+    url.headers['Connection'] = `keep-alive`
+    url.headers['Content-Type'] = `application/x-www-form-urlencoded`
+    url.headers['Accept'] = `application/json, text/plain, */*`
+    url.headers['Host'] = `ms.jr.jd.com`
+    url.headers['User-Agent'] = `Mozilla/5.0 (iPhone; CPU iPhone OS 13_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 mediaCode=SFEXPRESSAPP-iOS-ML`
+    url.headers['Accept-Language'] = `en-us`
+    url.headers['Accept-Encoding'] = `gzip, deflate, br`
     chen.get(url, (error, response, data) => {
-      chen.log(`${cookieName}, data: ${data}`)
-      let result = JSON.parse(data)
-      
+      const result = JSON.parse(data)
       const title = `${cookieName}`
       let subTitle = ``
       let detail = ``
     
-      if (result.code == 0) {
-        subTitle = `签到结果:   成功`
-        detail = `获取鲜豆：${result.result.points}`
-      } else if(result.code==201){
-        subTitle = `签到结果: 失败`
-        detail = `说明: 未登录`
-      } else if(result.code==-1){
-        subTitle = `签到结果：重复签到`
-        detail = `说明: ${result.msg}`
-      }else {
+      if (result.resultCode == 0 && result.resultMsg == '操作成功') {
+        subTitle = `签到结果: 成功`
+      } else if (result.resultCode == 3) {
+          subTitle = `签到结果: 失败,需要重新获得cookie`
+      } else {
         subTitle = `签到结果: 未知`
-        detail = `说明: ${result.msg}`
+        detail = `说明: ${result.resultrMsg}`
       }
       chen.msg(title, subTitle, detail)
-      chen.log(`返回结果代码:${result.code}，返回信息:${result.msg}`)
     })
     chen.done()
     }
@@ -77,3 +75,4 @@ function sign() {
     }
     return { isSurge, isQuanX, msg, log, getdata, setdata, get, post, done }
   }
+  
