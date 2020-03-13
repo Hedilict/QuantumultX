@@ -1,32 +1,32 @@
-const cookieName = '芒果TV'
-const signurlKey = 'chavy_signurl_mgtv'
-const signheaderKey = 'chavy_signheader_mgtv'
-const chavy = init()
-const signurlVal = chavy.getdata(signurlKey)
-const signheaderVal = chavy.getdata(signheaderKey)
+const cookieName = '网易考拉'
+const signurlKey = 'senku_signurl_wykl'
+const signheaderKey = 'senku_signheader_wykl'
+const signbodyKey = 'senku_signbody_wykl'
+const senku = init()
+const signurlVal = senku.getdata(signurlKey)
+const signheaderVal = senku.getdata(signheaderKey)
+const signBodyVal = senku.getdata(signbodyKey)
 
 sign()
 
 function sign() {
-  const url = { url: signurlVal, headers: JSON.parse(signheaderVal) }
-  url.body = '{}'
-  chavy.post(url, (error, response, data) => {
-    chavy.log(`${cookieName}, data: ${data}`)
-    const title = `${cookieName}`
-    let subTitle = ''
-    let detail = ''
-    const result = JSON.parse(data.match(/\(([^\)]*)\)/)[1])
-    if (result.code == 200) {
+  const url = { url: signurlVal, headers: JSON.parse(signheaderVal), body: signBodyVal }
+  senku.post(url, (error, response, data) => {
+    senku.log(`${cookieName}, data: ${data}`)
+    const res = JSON.parse(data)
+    let subTitle = ``
+    let detail = ``
+    if (res.retCode == 200) {
       subTitle = `签到结果: 成功`
-      detail = `共签: ${result.data.curDay}天, 连签: ${result.data.curDayTotal}天, 积分: ${result.data.balance} +${result.data.credits}）`
-    } else if (result.code == 1002) {
+      detail = `获得:${res.data.popupWindowInfo.frontRewardName},签到天数:${res.data.signCount}`
+    } else if (res.retCode==401 || res.retCode==403 || res.code==401) {
       subTitle = `签到结果: 成功 (重复签到)`
     } else {
       subTitle = `签到结果: 失败`
-      detail = `编码: ${result.code}, 说明: ${result.msg}`
+      detail = `编码: ${res.code}, 说明: ${res.msg}`
     }
-    chavy.msg(title, subTitle, detail)
-    chavy.done()
+    senku.msg(cookieName, subTitle, detail)
+    senku.done()
   })
 }
 
@@ -56,7 +56,7 @@ function init() {
     }
     if (isQuanX()) {
       url.method = 'GET'
-      $task.fetch(url).then((resp) => cb(null, {}, resp.body))
+      $task.fetch(url).then((resp) => cb(null, resp, resp.body))
     }
   }
   post = (url, cb) => {
@@ -65,7 +65,7 @@ function init() {
     }
     if (isQuanX()) {
       url.method = 'POST'
-      $task.fetch(url).then((resp) => cb(null, {}, resp.body))
+      $task.fetch(url).then((resp) => cb(null, resp, resp.body))
     }
   }
   done = (value = {}) => {

@@ -1,15 +1,18 @@
-const cookieName = 'HYCAN合创'
-const signurlKey = 'signurl_hycan'
-const signheaderKey = 'signheader_hycan'
-const hycan = init()
+const cookieName = '网易考拉'
+const signurlKey = 'senku_signurl_wykl'
+const signheaderKey = 'senku_signheader_wykl'
+const signbodyKey = 'senku_signbody_wykl'
+const senku = init()
 
-if ($request && $request.method == 'POST') {
-  const signurlVal = $request.url
+const requrl = $request.url
+if ($request && $request.method != 'OPTIONS') {
+  const signurlVal = requrl
   const signheaderVal = JSON.stringify($request.headers)
-  
-  if (signurlVal) hycan.setdata(signurlVal, signurlKey)
-  if (signheaderVal) hycan.setdata(signheaderVal, signheaderKey)
-  hycan.msg(cookieName, `获取Cookie: 成功`, ``)
+  const signbodyVal = $request.body
+  if (signurlVal) senku.setdata(signurlVal, signurlKey)
+  if (signheaderVal) senku.setdata(signheaderVal, signheaderKey)
+  if (signbodyVal) senku.setdata(signbodyVal, signbodyKey)
+  senku.msg(cookieName, `获取Cookie: 成功`, ``)
 }
 
 function init() {
@@ -50,18 +53,9 @@ function init() {
       $task.fetch(url).then((resp) => cb(null, {}, resp.body))
     }
   }
-  put = (url, cb) => {
-    if (isSurge()) {
-      $httpClient.put(url, cb)
-    }
-    if (isQuanX()) {
-      url.method = 'PUT'
-      $task.fetch(url).then((resp) => cb(null, {}, resp.body))
-    }
-  }
   done = (value = {}) => {
     $done(value)
   }
-  return { isSurge, isQuanX, msg, log, getdata, setdata, get, post, put, done }
+  return { isSurge, isQuanX, msg, log, getdata, setdata, get, post, done }
 }
-hycan.done()
+senku.done()
