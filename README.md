@@ -28,7 +28,7 @@
 
 https://raw.githubusercontent.com/Hedilict/QuantumultX/master/Js_local_WorkingCopy.conf
 
-②.⚠️适用于商店版1.05
+②.⚠️适用于商店版1.05和1.06
 
 https://raw.githubusercontent.com/Hedilict/QuantumultX/master/Js_Local_WorkingCopy_Cookie.conf
 
@@ -83,6 +83,11 @@ Filter文件夹中收集了常用的过滤规则。
 + 常见的过滤规则
 + 远程复写订阅（本项目、神机）
 + 免费可用节点（持续更新）
+
+
+推荐✈️：
+https://beta.pcr.cy/auth/register?code=tEd8 ，L6-IPLC-0.01倍率。
+
 
 >同步库地址：
 
