@@ -1,12 +1,14 @@
 # QuantumultX
 
->此项目fork了nzw9314进行整理的脚本。nzw9314恢复更新啦！https://github.com/nzw9314/QuantumultX/tree/master
+>此项目fork了nzw9314整理的脚本。nzw9314恢复更新啦！https://github.com/nzw9314/QuantumultX/tree/master
 
 只是搬运和同步更新大佬脚本
 
 不负责维护脚本
 
 只测试自用脚本，其他大部分脚本未测试可用性。由于TF版本的Quantumult X已支持调用远程脚本功能，该项目仅对支持商店版的Quantumult X脚本进行更新。
+
+圈x新手入门教程：https://www.notion.so/Quantumult-X-nzw9314-33eb7b2697994205a8d18178f595bc6b
 
 
 
