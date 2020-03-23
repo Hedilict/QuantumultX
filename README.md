@@ -86,8 +86,8 @@ Filter文件夹中收集了常用的过滤规则。
 + 远程复写订阅（本项目、神机）
 + 免费可用节点（持续更新）
 
->关于网易云音乐解锁🔓
-配置文件中提供了三个解锁网易云音乐的节点，以及网易云音乐的分流规则：https://raw.githubusercontent.com/Hedilict/QuantumultX/master/Filter/NetEaseCloudMusic.list ，配置文件中均已配置好。最后一步还需要安装网易云音乐的证书：https://raw.githubusercontent.com/nondanee/UnblockNeteaseMusic/master/ca.crt 即可使用。
+>关于网易云音乐解锁🔓:
+>配置文件中提供了三个解锁网易云音乐的节点，以及网易云音乐的分流规则：https://raw.githubusercontent.com/Hedilict/QuantumultX/master/Filter/NetEaseCloudMusic.list ，配置文件中均已配置好。最后一步还需要安装网易云音乐的证书：https://raw.githubusercontent.com/nondanee/UnblockNeteaseMusic/master/ca.crt 即可使用。
 
 
 推荐✈️：
