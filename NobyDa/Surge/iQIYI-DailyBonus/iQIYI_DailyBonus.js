@@ -1,3 +1,4 @@
+
 /*
 iQIYI Daily bonus script
 
@@ -45,3 +46,5 @@ $httpClient.get('https://tc.vip.iqiyi.com/taskCenter/task/queryUserTask?autoSign
     }
   }
 })
+$done()
+
