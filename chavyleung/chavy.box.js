@@ -1,12 +1,13 @@
 const $ = new Env('BoxJs')
 $.domain = '8.8.8.8'
 
-$.version = '0.2.2'
+$.version = '0.3.3'
 $.versionType = 'beta'
 $.KEY_sessions = 'chavy_boxjs_sessions'
 $.KEY_versions = 'chavy_boxjs_versions'
 $.KEY_userCfgs = 'chavy_boxjs_userCfgs'
 $.KEY_globalBaks = 'chavy_boxjs_globalBaks'
+$.KEY_curSessions = 'chavy_boxjs_cur_sessions'
 
 $.json = $.name
 $.html = $.name
@@ -30,7 +31,7 @@ $.html = $.name
   // 处理 Api 请求 => /api
   else if (/^\/api/.test(path)) {
     $.isapi = true
-    handleApi()
+    await handleApi()
   }
   // 处理 Api 请求 => /my
   else if (/^\/my/.test(path)) {
@@ -60,7 +61,7 @@ function getPath(url) {
 
 function getSystemCfgs() {
   return {
-    env: $.isSurge() ? 'Surge' : $.isQuanX() ? 'QuanX' : $.isLoon() ? 'Loon' : 'Node',
+    env: $.isLoon() ? 'Loon' : $.isQuanX() ? 'QuanX' : $.isSurge() ? 'Surge' : 'Node',
     version: $.version,
     versionType: $.versionType,
     envs: [
@@ -218,62 +219,6 @@ function getSystemApps() {
       rewrites: [{ type: 'request', pattern: '^https://note.youdao.com/yws/mapi/user?method=checkin', script: 'noteyoudao.cookie.js', body: true }]
     },
     {
-      id: 'QTT',
-      name: '趣头条',
-      keys: ['senku_signKey_qtt', 'senku_signXTK_qtt', 'senku_readKey_qtt', 'senku_navCoinKey_qtt'],
-      author: '@GideonSenku',
-      repo: 'https://github.com/chavyleung/scripts/tree/master/qtt',
-      icons: ['https://raw.githubusercontent.com/Orz-3/mini/master/qtt.png', 'https://raw.githubusercontent.com/Orz-3/task/master/qtt.png']
-    },
-    {
-      id: 'qmkg',
-      name: '全民K歌',
-      keys: ['senku_signurl_qmkg', 'senku_signheader_qmkg', 'senku_signbody_qmkg'],
-      author: '@GideonSenku',
-      repo: 'https://github.com/chavyleung/scripts/tree/master/qmkg',
-      icons: ['https://raw.githubusercontent.com/Orz-3/mini/master/qmkg.png', 'https://raw.githubusercontent.com/Orz-3/task/master/qmkg.png']
-    },
-    {
-      id: 'bcz',
-      name: '百词斩',
-      keys: ['senku_cookie_bcz', 'senku_key_bcz'],
-      author: '@GideonSenku',
-      repo: 'https://github.com/chavyleung/scripts/tree/master/bcz',
-      icons: ['https://raw.githubusercontent.com/Orz-3/mini/master/bcz.png', 'https://raw.githubusercontent.com/Orz-3/task/master/bcz.png']
-    },
-    {
-      id: 'zxhc',
-      name: '智行火车票',
-      keys: ['senku_signurl_zxhc', 'senku_signheader_zxhc', 'senku_signbody_zxhc'],
-      author: '@GideonSenku',
-      repo: 'https://github.com/chavyleung/scripts/tree/master/zxhc',
-      icons: ['https://raw.githubusercontent.com/Orz-3/mini/master/zxhc.png', 'https://raw.githubusercontent.com/Orz-3/task/master/zxhc.png']
-    },
-    {
-      id: 'fenqile',
-      name: '分期乐',
-      keys: ['senku_signurl_fenqile', 'senku_signheader_fenqile', 'senku_signbody_fenqile', 'senku_signDailyKey_fenqile', 'senku_signDailyUrlKey_fenqile'],
-      author: '@GideonSenku',
-      repo: 'https://github.com/chavyleung/scripts/tree/master/fenqile',
-      icons: ['https://raw.githubusercontent.com/Orz-3/mini/master/fenqile.png', 'https://raw.githubusercontent.com/Orz-3/task/master/fenqile.png']
-    },
-    {
-      id: 'fandeng',
-      name: '樊登读书',
-      keys: ['senku_signurl_pandeng', 'senku_signheader_pandeng', 'senku_signbody_pandeng'],
-      author: '@GideonSenku',
-      repo: 'https://github.com/chavyleung/scripts/tree/master/fandeng',
-      icons: ['https://raw.githubusercontent.com/Orz-3/mini/master/fandeng.png', 'https://raw.githubusercontent.com/Orz-3/task/master/fandeng.png']
-    },
-    {
-      id: 'dbsj',
-      name: '豆瓣时间',
-      keys: ['senku_signurl_dbsj', 'senku_signheader_dbsj', 'senku_signbody_dbsj'],
-      author: '@GideonSenku',
-      repo: 'https://github.com/chavyleung/scripts/tree/master/dbsj',
-      icons: ['https://raw.githubusercontent.com/Orz-3/mini/master/dbsj.png', 'https://raw.githubusercontent.com/Orz-3/task/master/dbsj.png']
-    },
-    {
       id: 'txnews',
       name: '腾讯新闻',
       keys: ['sy_signurl_txnews', 'sy_cookie_txnews', 'sy_signurl_txnews2', 'sy_cookie_txnews2'],
@@ -305,7 +250,7 @@ function getSystemApps() {
 }
 
 function getUserCfgs() {
-  const defcfgs = { favapps: [], appsubs: [] }
+  const defcfgs = { favapps: [], appsubs: [], appsubCaches: {} }
   const userCfgsStr = $.getdata($.KEY_userCfgs)
   return userCfgsStr ? Object.assign(defcfgs, JSON.parse(userCfgsStr)) : defcfgs
 }
@@ -315,36 +260,56 @@ function getGlobalBaks() {
   return globalBaksStr ? JSON.parse(globalBaksStr) : []
 }
 
-async function getAppSubs() {
+async function refreshAppSubs() {
   const usercfgs = getUserCfgs()
-  const appsubs = []
-  const subActs = []
   for (let subIdx = 0; subIdx < usercfgs.appsubs.length; subIdx++) {
     const sub = usercfgs.appsubs[subIdx]
-    subActs.push(
-      new Promise((resolve) => {
-        $.get({ url: sub.url }, (err, resp, data) => {
-          try {
-            const respsub = JSON.parse(data)
-            if (Array.isArray(respsub.apps)) {
-              respsub._raw = sub
-              wrapapps(respsub.apps)
-              appsubs.push(respsub)
-            }
-          } catch (e) {
-            $.logErr(e, resp)
-            sub.isErr = true
-            sub.apps = []
-            sub._raw = JSON.parse(JSON.stringify(sub))
-            appsubs.push(sub)
-          } finally {
-            resolve()
+    const suburl = sub.url.replace(/[ ]|[\r\n]/g, '')
+    await new Promise((resolve) => {
+      $.get({ url: suburl }, (err, resp, data) => {
+        try {
+          const respsub = JSON.parse(data)
+          if (Array.isArray(respsub.apps)) {
+            respsub._raw = sub
+            respsub.updateTime = new Date()
+            wrapapps(respsub.apps)
+            usercfgs.appsubCaches[suburl] = respsub
+            console.log(`更新订阅, 成功! ${suburl}`)
           }
-        })
+        } catch (e) {
+          $.logErr(e, resp)
+          sub.isErr = true
+          sub.apps = []
+          sub._raw = JSON.parse(JSON.stringify(sub))
+          sub.updateTime = new Date()
+          usercfgs.appsubCaches[suburl] = sub
+          console.log(`更新订阅, 失败! ${suburl}`)
+        } finally {
+          resolve()
+        }
       })
-    )
+    })
   }
-  await Promise.all(subActs)
+  $.setdata(JSON.stringify(usercfgs), $.KEY_userCfgs)
+  console.log(`全部订阅, 完成!`)
+}
+
+function getAppSubs() {
+  const usercfgs = getUserCfgs()
+  const appsubs = []
+  for (let subIdx = 0; subIdx < usercfgs.appsubs.length; subIdx++) {
+    const sub = usercfgs.appsubs[subIdx]
+    const suburl = sub.url.replace(/[ ]|[\r\n]/g, '')
+    const cachedsub = usercfgs.appsubCaches[suburl]
+    if (cachedsub) {
+      appsubs.push(cachedsub)
+    } else {
+      sub.isErr = true
+      sub.apps = []
+      sub._raw = JSON.parse(JSON.stringify(sub))
+      appsubs.push(sub)
+    }
+  }
   return appsubs
 }
 
@@ -396,8 +361,8 @@ function getSessions() {
 async function getVersions() {
   let vers = []
   await new Promise((resolve) => {
-    // const verurl = 'https://github.com/chavyleung/scripts/raw/master/box/release/box.release.json'
-    const verurl = 'https://gist.github.com/chavyleung/e1f1021391143c961d925bcdc21dca24/raw/4185a281c1861ceadd870ca55a497077ae6fefc2/box.release.json'
+    setTimeout(resolve, 1000)
+    const verurl = 'https://raw.githubusercontent.com/chavyleung/scripts/master/box/release/box.release.json'
     $.get({ url: verurl }, (err, resp, data) => {
       try {
         const _data = JSON.parse(data)
@@ -405,6 +370,7 @@ async function getVersions() {
       } catch (e) {
         $.logErr(e, resp)
       } finally {
+        console.log(`resolve`)
         resolve()
       }
     })
@@ -426,7 +392,7 @@ function getSystemThemes() {
   ]
 }
 
-function handleApi() {
+async function handleApi() {
   const data = JSON.parse($request.body)
   // 保存会话
   if (data.cmd === 'saveSession') {
@@ -472,6 +438,8 @@ function handleApi() {
   // 应用会话
   else if (data.cmd === 'useSession') {
     $.log(`❕ ${$.name}, 应用会话!`)
+    const curSessionsstr = $.getdata($.KEY_curSessions)
+    const curSessions = ![undefined, null, 'null', ''].includes(curSessionsstr) ? JSON.parse(curSessionsstr) : {}
     const session = data.val
     const sessions = getSessions()
     const sessionIdx = sessions.findIndex((s) => session.id === s.id)
@@ -482,6 +450,8 @@ function handleApi() {
         const usesuc = $.setdata(`${newval}`, data.key)
         $.log(`❕ ${$.name}, 替换数据: ${data.key} ${usesuc ? '成功' : '失败'}!`, `旧值: ${oldval}`, `新值: ${newval}`)
       })
+      curSessions[session.appId] = session.id
+      $.setdata(JSON.stringify(curSessions), $.KEY_curSessions)
       $.subt = `应用会话: 成功 (${session.appName})`
       $.desc = []
       $.desc.push(`会话名称: ${session.name}`, `应用名称: ${session.appName}`, `会话编号: ${session.id}`, `应用编号: ${session.appId}`, `数据: ${JSON.stringify(session)}`)
@@ -559,6 +529,10 @@ function handleApi() {
       $.msg($.name, $.subt, $.desc)
     }
   }
+  // 刷新应用订阅
+  else if (data.cmd === 'refreshAppSubs') {
+    await refreshAppSubs()
+  }
 }
 
 async function getBoxData() {
@@ -567,7 +541,7 @@ async function getBoxData() {
     versions: await getVersions(),
     sysapps: getSystemApps(),
     userapps: getUserApps(),
-    appsubs: await getAppSubs(),
+    appsubs: getAppSubs(),
     syscfgs: getSystemCfgs(),
     usercfgs: getUserCfgs(),
     globalbaks: getGlobalBaks(),
@@ -658,7 +632,24 @@ function printHtml(data, curapp = null, curview = 'app') {
               </v-list>
             </v-menu>
             <v-btn icon @click="ui.curview = ui.bfview" v-else><v-icon>mdi-chevron-left</v-icon></v-btn>
-            <v-autocomplete :label="ui.curapp ? ui.curapp.name + ' ' + ui.curapp.author : 'BoxJs - v' + box.syscfgs.version" no-data-text="未实现" dense hide-details solo> </v-autocomplete>
+            <v-autocomplete v-model="ui.autocomplete.curapp" :items="apps" :filter="appfilter" :menu-props="{ closeOnContentClick: true, overflowY: true }" :label="ui.curapp ? ui.curapp.name + ' ' + ui.curapp.author : 'BoxJs - v' + box.syscfgs.version" no-data-text="未实现" dense hide-details solo>
+              <template v-slot:item="{ item }">
+                <v-list-item @click="goAppSessionView(item)">
+                  <v-list-item-avatar>
+                    <img :src="item.icons[box.usercfgs.isTransparentIcons ? 0 : 1]">
+                  </v-list-item-avatar>
+                  <v-list-item-content>
+                    <v-list-item-title>{{ item.name }} ({{ item.id }})</v-list-item-title>
+                    <v-list-item-subtitle>{{ item.repo }}</v-list-item-subtitle>
+                    <v-list-item-subtitle>{{ item.author }}</v-list-item-subtitle>
+                  </v-list-item-content>
+                  <v-list-item-action>
+                    <v-btn icon v-if="item.isFav" @click.stop="onFav(item)"><v-icon color="yellow darken-2">mdi-star</v-icon></v-btn>
+                    <v-btn icon v-else @click.stop="onFav(item)"><v-icon color="grey">mdi-star-outline</v-icon></v-btn>
+                  </v-list-item-action>
+                </v-list-item>
+              </template>
+            </v-autocomplete>
             <v-btn icon @click="ui.drawer.show = true">
               <v-avatar size="26">
                 <img :src="box.syscfgs.orz3.icon" :alt="box.syscfgs.orz3.repo" />
@@ -927,9 +918,10 @@ function printHtml(data, curapp = null, curview = 'app') {
                   <v-subheader inset>
                     应用订阅 ({{ appsubs.length }})
                     <v-spacer></v-spacer>
+                    <v-btn icon @click="onRefreshAppSubs"><v-icon>mdi-refresh-circle</v-icon></v-btn>
                     <v-btn icon @click="ui.addAppSubDialog.show = true"><v-icon color="green">mdi-plus-circle</v-icon></v-btn>
                   </v-subheader>
-                  <v-list-item three-line dense v-for="(sub, subIdx) in appsubs" :key="sub.id" @click="">
+                  <v-list-item two-line dense v-for="(sub, subIdx) in appsubs" :key="sub.id" @click="">
                     <v-list-item-avatar v-if="sub.icon"><v-img :src="sub.icon"></v-img></v-list-item-avatar>
                     <v-list-item-avatar v-else color="grey"><v-icon dark>mdi-account</v-icon></v-list-item-avatar>
                     <v-list-item-content>
@@ -939,6 +931,7 @@ function printHtml(data, curapp = null, curview = 'app') {
                       </v-list-item-title>
                       <v-list-item-subtitle>{{ sub.repo ? sub.repo : sub._raw.url }}</v-list-item-subtitle>
                       <v-list-item-subtitle color="blue">{{ sub.author ? sub.author : '@anonymous' }}</v-list-item-subtitle>
+                      <v-list-item-subtitle color="blue">更新于: {{ moment(sub.updateTime) }}</v-list-item-subtitle>
                     </v-list-item-content>
                     <v-list-item-action>
                       <v-menu bottom left>
@@ -1121,8 +1114,10 @@ function printHtml(data, curapp = null, curview = 'app') {
           </v-expand-transition>
           <v-bottom-sheet v-model="ui.versheet.show" hide-overlay scrollable>
             <v-card flat scrollable>
-              <v-subheader>
+              <v-subheader class="my-4">
                 <v-btn text @click="ui.versheet.show = false, ui.updatesheet.show = true">升级教程</v-btn>
+                <v-spacer></v-spacer>
+                <v-btn text>新版本</v-btn>
                 <v-spacer></v-spacer>
                 <v-btn text @click="ui.versheet.show = false">朕, 知道了!</v-btn>
               </v-subheader>
@@ -1222,6 +1217,7 @@ function printHtml(data, curapp = null, curview = 'app') {
       <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/axios@0.19.2/dist/axios.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/moment@2.26.0/moment.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/timeago.js@4.0.2/dist/timeago.full.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/uuid@latest/dist/umd/uuidv4.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/vue-clipboard2@0.3.1/dist/vue-clipboard.min.js"></script>
       <script>
@@ -1238,6 +1234,7 @@ function printHtml(data, curapp = null, curview = 'app') {
                 curappTabs: { curtab: 'sessions' },
                 curappSessions: null,
                 overlay: { show: false },
+                autocomplete: { curapp: null },
                 editProfileDialog: { show: false, bak: '' },
                 impGlobalBakDialog: { show: false, bak: '' },
                 reloadConfirmDialog: { show: false, title: '操作成功', message: '是否马上刷新页面?' },
@@ -1255,6 +1252,13 @@ function printHtml(data, curapp = null, curview = 'app') {
             }
           },
           computed: {
+            apps: function () {
+              const apps = []
+              apps.push(...this.box.sysapps)
+              this.box.appsubs.forEach((sub, subIdx) => apps.push(...sub.apps))
+              apps.sort((a, b) => a.id.localeCompare(b.id))
+              return apps
+            },
             appcnt: function () {
               let cnt = 0
               cnt += Array.isArray(this.box.sysapps) ? this.box.sysapps.length : 0
@@ -1368,6 +1372,13 @@ function printHtml(data, curapp = null, curview = 'app') {
             }
           },
           methods: {
+            moment(date) {
+              return timeago.format(date, 'zh_CN');
+              // return moment(date).format('YYYY-MM-DD HH:mm:ss')
+            },
+            appfilter(item, queryText, itemText) {
+              return item.id.includes(queryText) || item.name.includes(queryText)
+            },
             onLink(link) {
               window.open(link)
             },
@@ -1488,6 +1499,10 @@ function printHtml(data, curapp = null, curview = 'app') {
               }
               axios.post('/api', JSON.stringify({ cmd: 'addAppSub', val: sub }))
               this.ui.addAppSubDialog.show = false
+              this.onReload()
+            },
+            onRefreshAppSubs(){
+              axios.post('/api', JSON.stringify({ cmd: 'refreshAppSubs', val: null }))
               this.onReload()
             },
             reload() {
