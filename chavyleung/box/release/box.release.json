@@ -1,6 +1,71 @@
 {
   "releases": [
     {
+      "version": "0.3.3",
+      "tags": ["beta"],
+      "author": "@chavyleung",
+      "icon": "https://avatars3.githubusercontent.com/u/29748519",
+      "repo": "https://github.com/chavyleung",
+      "notes": [
+        {
+          "name": "修复",
+          "descs": ["Loon环境判断错误问题"]
+        }
+      ]
+    },
+    {
+      "version": "0.3.2",
+      "tags": ["beta"],
+      "author": "@chavyleung",
+      "icon": "https://avatars3.githubusercontent.com/u/29748519",
+      "repo": "https://github.com/chavyleung",
+      "notes": [
+        {
+          "name": "调整",
+          "descs": ["应用订阅启用缓存机制 (需要手动更新)"]
+        }
+      ]
+    },
+    {
+      "version": "0.3.1",
+      "tags": ["beta"],
+      "author": "@chavyleung",
+      "icon": "https://avatars3.githubusercontent.com/u/29748519",
+      "repo": "https://github.com/chavyleung",
+      "notes": [
+        {
+          "name": "修复",
+          "descs": ["手动切换会话会导致自动切换顺序错误问题"]
+        }
+      ]
+    },
+    {
+      "version": "0.3.0",
+      "tags": ["beta"],
+      "author": "@chavyleung",
+      "icon": "https://avatars3.githubusercontent.com/u/29748519",
+      "repo": "https://github.com/chavyleung",
+      "notes": [
+        {
+          "name": "新增",
+          "descs": ["全局搜索"]
+        }
+      ]
+    },
+    {
+      "version": "0.2.4",
+      "tags": ["beta"],
+      "author": "@chavyleung",
+      "icon": "https://avatars3.githubusercontent.com/u/29748519",
+      "repo": "https://github.com/chavyleung",
+      "notes": [
+        {
+          "name": "优化",
+          "descs": ["帮助页面样式", "订阅链接多余空格&换行等字符"]
+        }
+      ]
+    },
+    {
       "version": "0.2.2",
       "tags": ["beta"],
       "author": "@chavyleung",
