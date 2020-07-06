@@ -1,7 +1,7 @@
 const $ = new Env('BoxJs')
 $.domain = '8.8.8.8'
 
-$.version = '0.3.3'
+$.version = '0.3.9'
 $.versionType = 'beta'
 $.KEY_sessions = 'chavy_boxjs_sessions'
 $.KEY_versions = 'chavy_boxjs_versions'
@@ -13,7 +13,6 @@ $.json = $.name
 $.html = $.name
 
 !(async () => {
-  // $.setdata('', 'github')
   const path = getPath($request.url)
   // 处理主页请求 => /home
   if (/^\/home/.test(path)) {
@@ -301,7 +300,10 @@ function getAppSubs() {
     const sub = usercfgs.appsubs[subIdx]
     const suburl = sub.url.replace(/[ ]|[\r\n]/g, '')
     const cachedsub = usercfgs.appsubCaches[suburl]
-    if (cachedsub) {
+    if (cachedsub && Array.isArray(cachedsub.apps)) {
+      cachedsub._raw = sub
+      cachedsub.apps.forEach((app) => (app.datas = []))
+      wrapapps(cachedsub.apps)
       appsubs.push(cachedsub)
     } else {
       sub.isErr = true
@@ -447,7 +449,8 @@ async function handleApi() {
       session.datas.forEach((data) => {
         const oldval = $.getdata(data.key)
         const newval = data.val
-        const usesuc = $.setdata(`${newval}`, data.key)
+        const isNull = (val) => [undefined, null, 'null', 'undefined', ''].includes(val)
+        const usesuc = $.setdata(isNull(newval) ? '' : `${newval}`, data.key)
         $.log(`❕ ${$.name}, 替换数据: ${data.key} ${usesuc ? '成功' : '失败'}!`, `旧值: ${oldval}`, `新值: ${newval}`)
       })
       curSessions[session.appId] = session.id
@@ -520,7 +523,8 @@ async function handleApi() {
       const { chavy_boxjs_sessions, chavy_boxjs_sysCfgs, chavy_boxjs_userCfgs, chavy_boxjs_sysApps, ...datas } = bakobj.bak
       $.setdata(JSON.stringify(chavy_boxjs_sessions), $.KEY_sessions)
       $.setdata(JSON.stringify(chavy_boxjs_userCfgs), $.KEY_userCfgs)
-      Object.keys(datas).forEach((datkey) => $.setdata(datas[datkey] ? datas[datkey] : '', datkey))
+      const isNull = (val) => [undefined, null, 'null', 'undefined', ''].includes(val)
+      Object.keys(datas).forEach((datkey) => $.setdata(isNull(datas[datkey]) ? '' : `${datas[datkey]}`, datkey))
       $.subt = '还原备份: 成功'
       $.msg($.name, $.subt, $.desc)
     } else {
@@ -611,10 +615,15 @@ function printHtml(data, curapp = null, curview = 'app') {
       <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
       <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet" />
       <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet" />
+      <style>
+        [v-cloak]{
+          display: none
+        }
+      </style>
     </head>
     <body>
       <div id="app">
-        <v-app v-scroll="onScroll">
+        <v-app v-scroll="onScroll" v-cloak>
           <v-app-bar :color="ui.appbar.color" app dense>
             <v-menu bottom left v-if="['app', 'home', 'log', 'sub'].includes(ui.curview) && box.syscfgs.env !== ''">
               <template v-slot:activator="{ on }">
@@ -707,11 +716,22 @@ function printHtml(data, curapp = null, curview = 'app') {
               </v-list-item>
               <v-list-item>
                 <v-list-item-content>
-                  <v-switch label="隐藏图标 (Box)" v-model="box.usercfgs.isHideBoxIcon" @change="onUserCfgsChange"></v-switch>
+                  <v-switch label="隐藏悬浮图标" v-model="box.usercfgs.isHideBoxIcon" @change="onUserCfgsChange"></v-switch>
                 </v-list-item-content>
                 <v-list-item-action @click="onLink(box.syscfgs.boxjs.repo)">
                   <v-btn fab small text>
                     <v-avatar size="32"><img :src="box.syscfgs.boxjs.icon" :alt="box.syscfgs.boxjs.repo" /></v-avatar>
+                  </v-btn>
+                </v-list-item-action>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-switch label="隐藏我的标题" v-model="box.usercfgs.isHideMyTitle" @change="onUserCfgsChange"></v-switch>
+                </v-list-item-content>
+                <v-list-item-action>
+                  <v-btn fab small text>
+                    <v-avatar v-if="box.usercfgs.icon" size="32"><img :src="box.usercfgs.icon" :alt="box.syscfgs.boxjs.repo" /></v-avatar>
+                    <v-icon v-else size="32">mdi-face-profile</v-icon>
                   </v-btn>
                 </v-list-item-action>
               </v-list-item>
@@ -732,6 +752,11 @@ function printHtml(data, curapp = null, curview = 'app') {
               </v-list-item>
               <v-list-item>
                 <v-list-item-content>
+                  <v-switch label="隐藏更新订阅提示" v-model="box.usercfgs.isHideRefreshTip" @change="onUserCfgsChange"></v-switch>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-content>
                   <v-switch label="调试模式 (数据)" v-model="box.usercfgs.isDebugData" @change="onUserCfgsChange"></v-switch>
                 </v-list-item-content>
               </v-list-item>
@@ -742,7 +767,7 @@ function printHtml(data, curapp = null, curview = 'app') {
               </v-list-item>
             </v-list>
           </v-navigation-drawer>
-          <v-main :class="box.usercfgs.isHideNavi ? 'mb-0' : 'mb-14'">
+          <v-main :class="box.usercfgs.isHideNavi ? 'mb-0 pb-16' : 'mb-14 pb-16'">
             <v-container fluid v-if="ui.curview === 'app'">
               <v-card class="mx-auto" v-if="favapps.length > 0">
                 <v-list nav dense>
@@ -918,7 +943,12 @@ function printHtml(data, curapp = null, curview = 'app') {
                   <v-subheader inset>
                     应用订阅 ({{ appsubs.length }})
                     <v-spacer></v-spacer>
-                    <v-btn icon @click="onRefreshAppSubs"><v-icon>mdi-refresh-circle</v-icon></v-btn>
+                    <v-tooltip v-model="ui.refreshtip.show && !box.usercfgs.isHideRefreshTip" bottom>
+                      <template v-slot:activator="{ on }">
+                        <v-btn icon @click="onRefreshAppSubs"><v-icon>mdi-refresh-circle</v-icon></v-btn>
+                      </template>
+                      <span>手动更新订阅</span>
+                    </v-tooltip>
                     <v-btn icon @click="ui.addAppSubDialog.show = true"><v-icon color="green">mdi-plus-circle</v-icon></v-btn>
                   </v-subheader>
                   <v-list-item two-line dense v-for="(sub, subIdx) in appsubs" :key="sub.id" @click="">
@@ -939,6 +969,10 @@ function printHtml(data, curapp = null, curview = 'app') {
                           <v-btn icon v-on="on"><v-icon>mdi-dots-vertical</v-icon></v-btn>
                         </template>
                         <v-list dense>
+                          <v-list-item @click="" v-clipboard:copy="sub._raw.url" v-clipboard:success="onCopy">
+                            <v-list-item-title>复制</v-list-item-title>
+                          </v-list-item>
+                          <v-divider></v-divider>
                           <v-list-item @click="onDelAppSub(sub)">
                             <v-list-item-title>删除</v-list-item-title>
                           </v-list-item>
@@ -1056,7 +1090,7 @@ function printHtml(data, curapp = null, curview = 'app') {
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn color="grey darken-1" text @click="ui.reloadConfirmDialog.show = false">稍候</v-btn>
-                  <v-btn color="green darken-1" text @click="reload">马上刷新</v-btn>
+                  <v-btn color="green darken-1" text @click="reload">马上刷新 {{ ui.reloadConfirmDialog.sec ? '(' + ui.reloadConfirmDialog.sec + ')' : '' }}</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -1104,10 +1138,15 @@ function printHtml(data, curapp = null, curview = 'app') {
                 <v-icon>mdi-database</v-icon>
               </v-btn>
               <v-btn value="my">
-                <v-avatar size="32" v-if="box.usercfgs.icon"><v-img :src="box.usercfgs.icon"></v-img></v-avatar>
+                <template v-if="box.usercfgs.icon">
+                  <span v-if="!box.usercfgs.isHideMyTitle">我的</span>
+                  <v-avatar :size="box.usercfgs.isHideMyTitle ? 36 : 24">
+                    <v-img :src="box.usercfgs.icon"></v-img>
+                  </v-avatar>
+                </template>
                 <template v-else>
-                  <span>我的</span>
-                  <v-icon>mdi-face-profile</v-icon>
+                  <span v-if="!box.usercfgs.isHideMyTitle">我的</span>
+                  <v-icon :size="box.usercfgs.isHideMyTitle ? 36 : 24">mdi-face-profile</v-icon>
                 </template>
               </v-btn>
             </v-bottom-navigation>
@@ -1235,9 +1274,10 @@ function printHtml(data, curapp = null, curview = 'app') {
                 curappSessions: null,
                 overlay: { show: false },
                 autocomplete: { curapp: null },
+                refreshtip: { show: false },
                 editProfileDialog: { show: false, bak: '' },
                 impGlobalBakDialog: { show: false, bak: '' },
-                reloadConfirmDialog: { show: false, title: '操作成功', message: '是否马上刷新页面?' },
+                reloadConfirmDialog: { show: false, sec: 0, title: '操作成功', message: '是否马上刷新页面?' },
                 impSessionDialog: { show: false, impval: '' },
                 addAppSubDialog: { show: false, url: '' },
                 versheet: { show: false },
@@ -1354,6 +1394,7 @@ function printHtml(data, curapp = null, curview = 'app') {
                 } else if (newval === 'sub') {
                   this.ui.curapp = null
                   this.ui.curappSessions = null
+                  this.showRefreshTip()
                   var state = { title: 'BoxJs' }
                   document.title = state.title
                   if (!isFullScreen) {
@@ -1367,6 +1408,15 @@ function printHtml(data, curapp = null, curview = 'app') {
                   if (!isFullScreen) {
                     history.pushState(state, '', '/my')
                   }
+                }
+              }
+            },
+            'ui.reloadConfirmDialog.sec': {
+              handler(newval, oldval) {
+                if (newval !== 0) {
+                  setTimeout(() => this.ui.reloadConfirmDialog.sec -= 1, 1000)
+                } else {
+                  this.reload()
                 }
               }
             }
@@ -1502,14 +1552,15 @@ function printHtml(data, curapp = null, curview = 'app') {
               this.onReload()
             },
             onRefreshAppSubs(){
-              axios.post('/api', JSON.stringify({ cmd: 'refreshAppSubs', val: null }))
               this.onReload()
             },
             reload() {
               window.location.reload()
             },
             onReload() {
+              axios.post('/api', JSON.stringify({ cmd: 'refreshAppSubs', val: null }))
               this.ui.reloadConfirmDialog.show = true
+              this.ui.reloadConfirmDialog.sec = 3
             },
             onDelSession(session) {
               axios.post('/api', JSON.stringify({ cmd: 'delSession', val: session }))
@@ -1571,6 +1622,10 @@ function printHtml(data, curapp = null, curview = 'app') {
             },
             onCopy(e) {
               this.ui.snackbar.show = true
+            },
+            showRefreshTip() {
+              this.ui.refreshtip.show = true
+              setTimeout(() => this.ui.refreshtip.show = false, 2000)
             }
           },
           mounted: function () {
@@ -1586,6 +1641,9 @@ function printHtml(data, curapp = null, curview = 'app') {
 
             const curver = this.box.syscfgs.version
             const vers = this.box.versions
+            if (this.ui.curview === 'sub') {
+              this.showRefreshTip()
+            }
             if (curver && Array.isArray(vers)) {
               const lastestVer = vers[0].version
               if (curver < lastestVer) {
