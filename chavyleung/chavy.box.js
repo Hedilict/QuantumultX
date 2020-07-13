@@ -1,7 +1,7 @@
 const $ = new Env('BoxJs')
 $.domain = '8.8.8.8'
 
-$.version = '0.4.3'
+$.version = '0.4.6'
 $.versionType = 'beta'
 $.KEY_sessions = 'chavy_boxjs_sessions'
 $.KEY_versions = 'chavy_boxjs_versions'
@@ -64,9 +64,9 @@ function getSystemCfgs() {
     version: $.version,
     versionType: $.versionType,
     envs: [
-      { id: 'Surge', icon: 'https://raw.githubusercontent.com/Orz-3/task/master/surge.png' },
-      { id: 'QuanX', icon: 'https://raw.githubusercontent.com/Orz-3/task/master/quantumultx.png' },
-      { id: 'Loon', icon: 'https://raw.githubusercontent.com/Orz-3/task/master/loon.png' }
+      { id: 'Surge', icons: ['https://raw.githubusercontent.com/Orz-3/mini/none/surge.png', 'https://raw.githubusercontent.com/Orz-3/task/master/surge.png'] },
+      { id: 'QuanX', icons: ['https://raw.githubusercontent.com/Orz-3/mini/none/quanX.png', 'https://raw.githubusercontent.com/Orz-3/task/master/quantumultx.png'] },
+      { id: 'Loon', icons: ['https://raw.githubusercontent.com/Orz-3/mini/none/loon.png', 'https://raw.githubusercontent.com/Orz-3/task/master/loon.png'] }
     ],
     chavy: {
       id: 'Chavy Scripts',
@@ -82,6 +82,7 @@ function getSystemCfgs() {
       id: 'BoxJs',
       show: false,
       icon: 'https://raw.githubusercontent.com/Orz-3/task/master/box.png',
+      icons: ['https://raw.githubusercontent.com/Orz-3/mini/master/box.png', 'https://raw.githubusercontent.com/Orz-3/task/master/box.png'],
       repo: 'https://github.com/chavyleung/scripts'
     }
   }
@@ -659,13 +660,13 @@ function printHtml(data, curapp = null, curview = 'app') {
               <template v-slot:activator="{ on }">
                 <v-btn icon v-on="on">
                   <v-avatar size="26">
-                    <img :src="box.syscfgs.envs.find(e=>e.id===box.syscfgs.env).icon" alt="box.syscfgs.env" />
+                    <img :src="box.syscfgs.envs.find(e=>e.id===box.syscfgs.env).icons[box.usercfgs.isTransparentIcons ? 0 : 1]" alt="box.syscfgs.env" />
                   </v-avatar>
                 </v-btn>
               </template>
               <v-list dense>
                 <v-list-item v-for="(env, envIdx) in box.syscfgs.envs" :key="env.id" @click="box.syscfgs.env=env.id">
-                  <v-list-item-avatar size="24"><v-img :src="env.icon"></v-img></v-list-item-avatar>
+                  <v-list-item-avatar size="24"><v-img :src="env.icons[box.usercfgs.isTransparentIcons ? 0 : 1]"></v-img></v-list-item-avatar>
                   <v-list-item-title>{{ env.id }}</v-list-item-title>
                 </v-list-item>
               </v-list>
@@ -683,7 +684,10 @@ function printHtml(data, curapp = null, curview = 'app') {
                     <v-list-item-subtitle>{{ item.author }}</v-list-item-subtitle>
                   </v-list-item-content>
                   <v-list-item-action>
-                    <v-btn icon v-if="item.isFav" @click.stop="onFav(item)"><v-icon color="yellow darken-2">mdi-star</v-icon></v-btn>
+                    <v-btn icon v-if="item.isFav" @click.stop="onFav(item)">
+                      <v-icon v-if="box.usercfgs.isTransparentIcons" color="white">mdi-star</v-icon>
+                      <v-icon v-else color="yellow darken-2">mdi-star</v-icon>
+                    </v-btn>
                     <v-btn icon v-else @click.stop="onFav(item)"><v-icon color="grey">mdi-star-outline</v-icon></v-btn>
                   </v-list-item-action>
                 </v-list-item>
@@ -700,7 +704,7 @@ function printHtml(data, curapp = null, curview = 'app') {
               <template v-slot:activator>
                 <v-btn fab>
                   <v-avatar size="48">
-                    <img :src="box.syscfgs.boxjs.icon" :alt="box.syscfgs.boxjs.repo" />
+                    <img :src="box.syscfgs.boxjs.icons[box.usercfgs.isTransparentIcons ? 0 : 1]" :alt="box.syscfgs.boxjs.repo" />
                   </v-avatar>
                 </v-btn>
               </template>
@@ -756,7 +760,7 @@ function printHtml(data, curapp = null, curview = 'app') {
                 </v-list-item-content>
                 <v-list-item-action @click="onLink(box.syscfgs.boxjs.repo)">
                   <v-btn fab small text>
-                    <v-avatar size="32"><img :src="box.syscfgs.boxjs.icon" :alt="box.syscfgs.boxjs.repo" /></v-avatar>
+                    <v-avatar size="32"><img :src="box.syscfgs.boxjs.icons[box.usercfgs.isTransparentIcons ? 0 : 1]" :alt="box.syscfgs.boxjs.repo" /></v-avatar>
                   </v-btn>
                 </v-list-item-action>
               </v-list-item>
@@ -805,74 +809,95 @@ function printHtml(data, curapp = null, curview = 'app') {
           </v-navigation-drawer>
           <v-main :class="box.usercfgs.isHideNavi ? 'mb-0 pb-16' : 'mb-14 pb-16'">
             <v-container fluid v-if="ui.curview === 'app'">
-              <v-card class="mx-auto" v-if="favapps.length > 0">
-                <v-list nav dense>
-                  <v-subheader inset>收藏应用 ({{ favapps.length }})</v-subheader>
-                  <v-list-item three-line dense v-for="(app, appIdx) in favapps" :key="app.id" @click="goAppSessionView(app)">
-                    <v-list-item-avatar><v-img :src="app.icons[box.usercfgs.isTransparentIcons ? 0 : 1]"></v-img></v-list-item-avatar>
-                    <v-list-item-content>
-                      <v-list-item-title>{{ app.name }} ({{ app.id }})</v-list-item-title>
-                      <v-list-item-subtitle>{{ app.repo }}</v-list-item-subtitle>
-                      <v-list-item-subtitle color="blue">{{ app.author }}</v-list-item-subtitle>
-                    </v-list-item-content>
-                    <v-list-item-action>
-                      <v-menu bottom left>
-                        <template v-slot:activator="{ on }">
-                          <v-btn icon v-on="on"><v-icon>mdi-dots-vertical</v-icon></v-btn>
-                        </template>
-                        <v-list dense>
-                          <v-list-item v-if="appIdx > 0" @click="onMoveFav(appIdx, -1)">
-                            <v-list-item-title>上移</v-list-item-title>
-                          </v-list-item>
-                          <v-list-item v-if="appIdx + 1 < favapps.length" @click="onMoveFav(appIdx, 1)">
-                            <v-list-item-title>下移</v-list-item-title>
-                          </v-list-item>
-                          <v-divider v-if="favapps.length > 1"></v-divider>
-                          <v-list-item @click="onFav(app)">
-                            <v-list-item-title>取消收藏</v-list-item-title>
-                          </v-list-item>
-                        </v-list>
-                      </v-menu>
-                    </v-list-item-action>
-                  </v-list-item>
-                </v-list>
-              </v-card>
-              <v-card class="mx-auto mt-4" v-for="(sub, subIdx) in appsubs.filter((sub) => sub.isErr !== true)" :key="sub.id">
-                <v-list nav dense>
-                  <v-subheader inset>
+              <v-expansion-panels class="mx-auto" v-if="favapps.length > 0" multiple v-model="box.usercfgs.favapppanel">
+                <v-expansion-panel>
+                  <v-expansion-panel-header>
+                    收藏应用 ({{ favapps.length }})
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <v-list nav dense class="mx-n4">
+                      <v-list-item three-line dense v-for="(app, appIdx) in favapps" :key="app.id" @click="goAppSessionView(app)">
+                        <v-list-item-avatar><v-img :src="app.icons[box.usercfgs.isTransparentIcons ? 0 : 1]"></v-img></v-list-item-avatar>
+                        <v-list-item-content>
+                          <v-list-item-title>{{ app.name }} ({{ app.id }})</v-list-item-title>
+                          <v-list-item-subtitle>{{ app.repo }}</v-list-item-subtitle>
+                          <v-list-item-subtitle color="blue">{{ app.author }}</v-list-item-subtitle>
+                        </v-list-item-content>
+                        <v-list-item-action>
+                          <v-menu bottom left>
+                            <template v-slot:activator="{ on }">
+                              <v-btn icon v-on="on"><v-icon>mdi-dots-vertical</v-icon></v-btn>
+                            </template>
+                            <v-list dense>
+                              <v-list-item v-if="appIdx > 0" @click="onMoveFav(appIdx, -1)">
+                                <v-list-item-title>上移</v-list-item-title>
+                              </v-list-item>
+                              <v-list-item v-if="appIdx + 1 < favapps.length" @click="onMoveFav(appIdx, 1)">
+                                <v-list-item-title>下移</v-list-item-title>
+                              </v-list-item>
+                              <v-divider v-if="favapps.length > 1"></v-divider>
+                              <v-list-item @click="onFav(app)">
+                                <v-list-item-title>取消收藏</v-list-item-title>
+                              </v-list-item>
+                            </v-list>
+                          </v-menu>
+                        </v-list-item-action>
+                      </v-list-item>
+                    </v-list>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-expansion-panels>
+              <v-expansion-panels class="mx-auto mt-4" multiple v-model="box.usercfgs.subapppanel">
+                <v-expansion-panel v-for="(sub, subIdx) in appsubs.filter((sub) => sub.isErr !== true)" :key="sub.id">
+                  <v-expansion-panel-header>
                     {{ sub.name ? sub.name : '匿名订阅' }} ({{ sub.apps.length }})
-                  </v-subheader>
-                  <v-list-item three-line dense v-for="(app, appIdx) in sub.apps" :key="app.id" @click="goAppSessionView(app)">
-                    <v-list-item-avatar><v-img :src="app.icons[box.usercfgs.isTransparentIcons ? 0 : 1]"></v-img></v-list-item-avatar>
-                    <v-list-item-content>
-                      <v-list-item-title>{{ app.name }} ({{ app.id }})</v-list-item-title>
-                      <v-list-item-subtitle>{{ app.repo }}</v-list-item-subtitle>
-                      <v-list-item-subtitle color="blue">{{ app.author }}</v-list-item-subtitle>
-                    </v-list-item-content>
-                    <v-list-item-action>
-                      <v-btn icon v-if="app.isFav" @click.stop="onFav(app, appIdx)"><v-icon color="yellow darken-2">mdi-star</v-icon></v-btn>
-                      <v-btn icon v-else @click.stop="onFav(app, appIdx)"><v-icon color="grey">mdi-star-outline</v-icon></v-btn>
-                    </v-list-item-action>
-                  </v-list-item>
-                </v-list>
-              </v-card>
-              <v-card class="mx-auto mt-4">
-                <v-list nav dense>
-                  <v-subheader inset>内置应用 ({{ box.sysapps.length }})</v-subheader>
-                  <v-list-item three-line dense v-for="(app, appIdx) in box.sysapps" :key="app.id" @click="goAppSessionView(app)">
-                    <v-list-item-avatar><v-img :src="app.icons[box.usercfgs.isTransparentIcons ? 0 : 1]"></v-img></v-list-item-avatar>
-                    <v-list-item-content>
-                      <v-list-item-title>{{ app.name }} ({{ app.id }})</v-list-item-title>
-                      <v-list-item-subtitle>{{ app.repo }}</v-list-item-subtitle>
-                      <v-list-item-subtitle color="blue">{{ app.author }}</v-list-item-subtitle>
-                    </v-list-item-content>
-                    <v-list-item-action>
-                      <v-btn icon v-if="app.isFav" @click.stop="onFav(app, appIdx)"><v-icon color="yellow darken-2">mdi-star</v-icon></v-btn>
-                      <v-btn icon v-else @click.stop="onFav(app, appIdx)"><v-icon color="grey">mdi-star-outline</v-icon></v-btn>
-                    </v-list-item-action>
-                  </v-list-item>
-                </v-list>
-              </v-card>
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <v-list nav dense class="mx-n4">
+                      <v-list-item three-line dense v-for="(app, appIdx) in sub.apps" :key="app.id" @click="goAppSessionView(app)">
+                        <v-list-item-avatar><v-img :src="app.icons[box.usercfgs.isTransparentIcons ? 0 : 1]"></v-img></v-list-item-avatar>
+                        <v-list-item-content>
+                          <v-list-item-title>{{ app.name }} ({{ app.id }})</v-list-item-title>
+                          <v-list-item-subtitle>{{ app.repo }}</v-list-item-subtitle>
+                          <v-list-item-subtitle color="blue">{{ app.author }}</v-list-item-subtitle>
+                        </v-list-item-content>
+                        <v-list-item-action>
+                          <v-btn icon v-if="app.isFav" @click.stop="onFav(app, appIdx)">
+                            <v-icon v-if="box.usercfgs.isTransparentIcons" color="white">mdi-star</v-icon>
+                            <v-icon v-else color="yellow darken-2">mdi-star</v-icon>
+                          </v-btn>
+                          <v-btn icon v-else @click.stop="onFav(app, appIdx)"><v-icon color="grey">mdi-star-outline</v-icon></v-btn>
+                        </v-list-item-action>
+                      </v-list-item>
+                    </v-list>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-expansion-panels>
+              <v-expansion-panels class="mx-auto mt-4" v-if="box.sysapps.length > 0" multiple v-model="box.usercfgs.sysapppanel">
+                <v-expansion-panel>
+                  <v-expansion-panel-header>
+                  内置应用 ({{ box.sysapps.length }})
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                  <v-list nav dense class="mx-n4">
+                    <v-list-item three-line dense v-for="(app, appIdx) in box.sysapps" :key="app.id" @click="goAppSessionView(app)">
+                      <v-list-item-avatar><v-img :src="app.icons[box.usercfgs.isTransparentIcons ? 0 : 1]"></v-img></v-list-item-avatar>
+                      <v-list-item-content>
+                        <v-list-item-title>{{ app.name }} ({{ app.id }})</v-list-item-title>
+                        <v-list-item-subtitle>{{ app.repo }}</v-list-item-subtitle>
+                        <v-list-item-subtitle color="blue">{{ app.author }}</v-list-item-subtitle>
+                      </v-list-item-content>
+                      <v-list-item-action>
+                        <v-btn icon v-if="app.isFav" @click.stop="onFav(app, appIdx)">
+                          <v-icon v-if="box.usercfgs.isTransparentIcons" color="white">mdi-star</v-icon>
+                          <v-icon v-else color="yellow darken-2">mdi-star</v-icon>
+                        </v-btn>
+                        <v-btn icon v-else @click.stop="onFav(app, appIdx)"><v-icon color="grey">mdi-star-outline</v-icon></v-btn>
+                      </v-list-item-action>
+                    </v-list-item>
+                  </v-list>
+                </v-expansion-panel>
+              </v-expansion-panels>
             </v-container>
             <v-container fluid v-if="ui.curview === 'appsession'">
               <v-card class="mx-auto mb-4">
@@ -1255,13 +1280,13 @@ function printHtml(data, curapp = null, curview = 'app') {
                   <template v-slot:activator="{ on }">
                     <v-btn icon v-on="on">
                       <v-avatar size="26">
-                        <img :src="box.syscfgs.envs.find(e=>e.id===box.syscfgs.env).icon" alt="box.syscfgs.env" />
+                        <img :src="box.syscfgs.envs.find(e=>e.id===box.syscfgs.env).icons[box.usercfgs.isTransparentIcons ? 0 : 1]" alt="box.syscfgs.env" />
                       </v-avatar>
                     </v-btn>
                   </template>
                   <v-list dense>
                     <v-list-item v-for="(env, envIdx) in box.syscfgs.envs" :key="env.id" @click="box.syscfgs.env=env.id">
-                      <v-list-item-avatar size="24"><v-img :src="env.icon"></v-img></v-list-item-avatar>
+                      <v-list-item-avatar size="24"><v-img :src="env.icons[box.usercfgs.isTransparentIcons ? 0 : 1]"></v-img></v-list-item-avatar>
                       <v-list-item-title>{{ env.id }}</v-list-item-title>
                     </v-list-item>
                   </v-list>
@@ -1494,6 +1519,21 @@ function printHtml(data, curapp = null, curview = 'app') {
                 } else {
                   this.reload()
                 }
+              }
+            },
+            'box.usercfgs.favapppanel': {
+              handler(newval, oldval) {
+                this.onUserCfgsChange()
+              }
+            },
+            'box.usercfgs.subapppanel': {
+              handler(newval, oldval) {
+                this.onUserCfgsChange()
+              }
+            },
+            'box.usercfgs.sysapppanel': {
+              handler(newval, oldval) {
+                this.onUserCfgsChange()
               }
             }
           },
