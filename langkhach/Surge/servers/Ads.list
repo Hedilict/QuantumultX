@@ -1,3 +1,9 @@
+<<<<<<< HEAD
 🚫 ad-gif = reject-tinygif
 🔴 ad-block = reject
 🟢 ad-pass = direct, interface = en0, 
+=======
+🚫 ad-gif = reject-tinygif
+🔴 ad-block = reject
+🟢 ad-pass = direct
+>>>>>>> 246fec1f16794fe0b0e62fb980d91376ac0a0d6f
