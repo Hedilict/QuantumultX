@@ -84,7 +84,7 @@ function Env(name, opts) {
     }
 
     loaddata() {
-      if (this.isNode) {
+      if (this.isNode()) {
         this.fs = this.fs ? this.fs : require('fs')
         this.path = this.path ? this.path : require('path')
         const curDirDataFilePath = this.path.resolve(this.dataFile)
@@ -95,7 +95,7 @@ function Env(name, opts) {
           const datPath = isCurDirDataFile ? curDirDataFilePath : rootDirDataFilePath
           try {
             return JSON.parse(this.fs.readFileSync(datPath))
-          } catch {
+          } catch (e) {
             return {}
           }
         } else return {}
@@ -103,7 +103,7 @@ function Env(name, opts) {
     }
 
     writedata() {
-      if (this.isNode) {
+      if (this.isNode()) {
         this.fs = this.fs ? this.fs : require('fs')
         this.path = this.path ? this.path : require('path')
         const curDirDataFilePath = this.path.resolve(this.dataFile)
@@ -169,7 +169,7 @@ function Env(name, opts) {
           this.lodash_set(objedval, paths, val)
           issuc = this.setval(JSON.stringify(objedval), objkey)
           console.log(`${objkey}: ${JSON.stringify(objedval)}`)
-        } catch {
+        } catch (e) {
           const objedval = {}
           this.lodash_set(objedval, paths, val)
           issuc = this.setval(JSON.stringify(objedval), objkey)
