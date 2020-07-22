@@ -1,6 +1,66 @@
 {
   "releases": [
     {
+      "version": "0.4.23",
+      "tags": ["beta"],
+      "author": "@chavyleung",
+      "icon": "https://avatars3.githubusercontent.com/u/29748519",
+      "repo": "https://github.com/chavyleung",
+      "notes": [
+        {
+          "name": "优化",
+          "descs": ["侧栏样式 (紧凑化)"]
+        }
+      ]
+    },
+    {
+      "version": "0.4.22",
+      "tags": ["beta"],
+      "author": "@chavyleung",
+      "icon": "https://avatars3.githubusercontent.com/u/29748519",
+      "repo": "https://github.com/chavyleung",
+      "notes": [
+        {
+          "name": "修复",
+          "descs": ["后台日志报 illegal 问题"]
+        }
+      ]
+    },
+    {
+      "version": "0.4.21",
+      "tags": ["beta"],
+      "author": "@chavyleung",
+      "icon": "https://avatars3.githubusercontent.com/u/29748519",
+      "repo": "https://github.com/chavyleung",
+      "notes": [
+        {
+          "name": "新增",
+          "descs": ["颜色主题可跟随系统 (明亮主题下强制使用彩色图标)"]
+        },
+        {
+          "name": "修复",
+          "descs": ["有新版本但没有提示问题"]
+        }
+      ]
+    },
+    {
+      "version": "0.4.20",
+      "tags": ["beta"],
+      "author": "@chavyleung",
+      "icon": "https://avatars3.githubusercontent.com/u/29748519",
+      "repo": "https://github.com/chavyleung",
+      "notes": [
+        {
+          "name": "新增",
+          "descs": ["明暗主题切换"]
+        },
+        {
+          "name": "优化",
+          "descs": ["页面渲染资源"]
+        }
+      ]
+    },
+    {
       "version": "0.4.19",
       "tags": ["beta"],
       "author": "@chavyleung",
