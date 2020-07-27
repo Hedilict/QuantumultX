@@ -1,7 +1,7 @@
 const $ = new Env('BoxJs')
 $.domain = '8.8.8.8'
 
-$.version = '0.6.4'
+$.version = '0.6.7'
 $.versionType = 'beta'
 $.KEY_sessions = 'chavy_boxjs_sessions'
 $.KEY_versions = 'chavy_boxjs_versions'
@@ -82,33 +82,6 @@ function getSystemCfgs() {
 
 function getSystemApps() {
   const sysapps = [
-    {
-      id: '52poje',
-      name: '吾爱破解',
-      keys: ['CookieWA'],
-      author: '@NobyDa',
-      repo: 'https://github.com/NobyDa/Script/blob/master/52pojie-DailyBonus/52pojie.js',
-      icons: ['https://raw.githubusercontent.com/Orz-3/mini/master/52pj.png', 'https://raw.githubusercontent.com/Orz-3/task/master/52pj.png'],
-      script: 'https://github.com/NobyDa/Script/blob/master/52pojie-DailyBonus/52pojie.js'
-    },
-    {
-      id: 'iQIYI',
-      name: '爱奇艺',
-      keys: ['CookieQY'],
-      author: '@NobyDa',
-      repo: 'https://github.com/NobyDa/Script/blob/master/iQIYI-DailyBonus/iQIYI.js',
-      icons: ['https://raw.githubusercontent.com/Orz-3/mini/master/iQIYI.png', 'https://raw.githubusercontent.com/Orz-3/task/master/iQIYI.png'],
-      script: 'https://raw.githubusercontent.com/NobyDa/Script/master/iQIYI-DailyBonus/iQIYI.js'
-    },
-    {
-      id: 'txnews',
-      name: '腾讯新闻',
-      keys: ['sy_signurl_txnews', 'sy_cookie_txnews', 'sy_signurl_txnews2', 'sy_cookie_txnews2'],
-      author: '@Sunert',
-      repo: 'https://github.com/Sunert/Scripts/blob/master/Task/txnews.js',
-      icons: ['https://raw.githubusercontent.com/Orz-3/mini/master/txnews.png', 'https://raw.githubusercontent.com/Orz-3/task/master/txnews.png'],
-      script: 'https://raw.githubusercontent.com/Sunert/Scripts/master/Task/txnews.js'
-    },
     {
       id: 'BoxSwitcher',
       name: '会话切换',
@@ -469,10 +442,17 @@ async function handleApi() {
   // 运行脚本
   else if (data.cmd === 'runScript') {
     const httpapi = $.getdata('@chavy_boxjs_userCfgs.httpapi')
-    if (/.*?@.*?:[0-9]+/.test(httpapi)) {
+    const ishttpapi = /.*?@.*?:[0-9]+/.test(httpapi)
+    console.log(ishttpapi)
+    if ($.isSurge() && ishttpapi) {
       await $.getScript(data.val.script).then((script) => $.runScript(script))
     } else {
-      $.msg($.name, '请先设置 http-api !')
+      await $.getScript(data.val.script).then((script) => {
+        // 避免被执行脚本误认为是 rewrite 环境
+        // 所以需要 `$request = undefined`
+        $request = undefined
+        eval(script)
+      })
     }
   }
 }
@@ -1038,7 +1018,7 @@ function printHtml(data, curapp = null, curview = 'app') {
                   <v-subheader v-if="Array.isArray(ui.curapp.settings)">
                     应用设置 ({{ ui.curapp.settings.length }})
                     <v-spacer></v-spacer>
-                    <v-btn v-if="box.syscfgs.env === 'Surge' && ui.curapp.script" icon @click="onRunScript"><v-icon color="green">mdi-play-circle</v-icon></v-btn>
+                    <v-btn v-if="ui.curapp.script" icon @click="onRunScript"><v-icon color="green">mdi-play-circle</v-icon></v-btn>
                   </v-subheader>
                   <v-form class="pl-4 pr-4">
                     <template v-for="(setting, settingIdx) in ui.curapp.settings">
@@ -1067,7 +1047,7 @@ function printHtml(data, curapp = null, curview = 'app') {
                 <v-subheader>
                   当前会话 ({{ ui.curapp.datas.length }})
                   <v-spacer></v-spacer>
-                  <v-btn v-if="box.syscfgs.env === 'Surge' && ui.curapp.script" icon @click="onRunScript"><v-icon color="green">mdi-play-circle</v-icon></v-btn>
+                  <v-btn v-if="ui.curapp.script" icon @click="onRunScript"><v-icon color="green">mdi-play-circle</v-icon></v-btn>
                   <v-menu bottom left>
                     <template v-slot:activator="{ on }">
                       <v-btn icon v-on="on"><v-icon>mdi-dots-vertical</v-icon></v-btn>
@@ -2012,13 +1992,17 @@ function printHtml(data, curapp = null, curview = 'app') {
               })
             },
             onRunScript() {
+              this.ui.overlay.show = true
+
               // const [key, addr] = this.box.usercfgs.httpapi.split('@')
               // const url = 'http://' + addr + '/v1/scripting/evaluate'
               // const body = { script_text: this.ui.curapp.script_text, mock_type: 'cron', timeout: 5 }
               // const opts = {headers: { 'X-Key': key, 'Accept': '*/*' }}
               // axios.post(url, body, opts)
 
-              axios.post('/api', JSON.stringify({ cmd: 'runScript', val: this.ui.curapp }))
+              axios.post('/api', JSON.stringify({ cmd: 'runScript', val: this.ui.curapp })).finally(() => {
+                this.ui.overlay.show = false
+              })
             }
           },
           mounted: function () {
