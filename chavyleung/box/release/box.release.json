@@ -1,6 +1,95 @@
 {
   "releases": [
     {
+      "version": "0.6.12",
+      "tags": ["beta"],
+      "author": "@chavyleung",
+      "icon": "https://avatars3.githubusercontent.com/u/29748519",
+      "repo": "https://github.com/chavyleung",
+      "notes": [
+        {
+          "name": "优化",
+          "descs": ["双击底栏'应用'可以收缩面板并回到顶部", "双击底栏'订阅'可以刷新订阅并回到顶部", "双击'BoxJs'按钮可以刷新页面", "保存应用设置、清存会话数据能马上生效 (不用刷新页面)", "可以隐藏刷新按钮"]
+        },
+        {
+          "name": "主题",
+          "descs": ["页面更多元素会跟随主题色调"]
+        },
+        {
+          "name": "重写",
+          "descs": ["BoxJs 的重写已经去除代码级依赖", "意味着仅通过修改正则和主机名即可替换 BoxJs 的访问地址", "同时征集一个比较理想的国内域名作为 BoxJs 的免翻墙访问地址", "iOS14 Surge TF 下提示私密连接的问题, 可以找一个 http 的域名来试试"]
+        }
+      ]
+    },
+    {
+      "version": "0.6.11",
+      "tags": ["beta"],
+      "author": "@chavyleung",
+      "icon": "https://avatars3.githubusercontent.com/u/29748519",
+      "repo": "https://github.com/chavyleung",
+      "notes": [
+        {
+          "name": "优化",
+          "descs": ["底栏颜色会跟随主题色调"]
+        }
+      ]
+    },
+    {
+      "version": "0.6.10",
+      "tags": ["beta"],
+      "author": "@chavyleung",
+      "icon": "https://avatars3.githubusercontent.com/u/29748519",
+      "repo": "https://github.com/chavyleung",
+      "notes": [
+        {
+          "name": "调整",
+          "descs": ["内置应用 偏好设置、切换会话 图标"]
+        },
+        {
+          "name": "感谢",
+          "descs": ["感谢 @Orz-3 制作图标"]
+        }
+      ]
+    },
+    {
+      "version": "0.6.9",
+      "tags": ["beta"],
+      "author": "@chavyleung",
+      "icon": "https://avatars3.githubusercontent.com/u/29748519",
+      "repo": "https://github.com/chavyleung",
+      "notes": [
+        {
+          "name": "新增",
+          "descs": ["内置应用: 偏好设置", "可以设置多个 http-api (设置完后在侧栏选择)", "可以分别设置暗黑、明亮主题下的主色调"]
+        },
+        {
+          "name": "控件",
+          "descs": ["拾色器: colorpicker"]
+        },
+        {
+          "name": "注意",
+          "descs": ["设置多个 http-api 时, 建议以逗号开头, 侧栏中选择空白的那个就是走 eval() 方案"]
+        }
+      ]
+    },
+    {
+      "version": "0.6.8",
+      "tags": ["beta"],
+      "author": "@chavyleung",
+      "icon": "https://avatars3.githubusercontent.com/u/29748519",
+      "repo": "https://github.com/chavyleung",
+      "notes": [
+        {
+          "name": "调整",
+          "descs": ["运行按钮位置"]
+        },
+        {
+          "name": "新增",
+          "descs": ["可以显示当前切换至哪个会话", "应用可以设定多个运行脚本 scripts: {name: '', script: ''}", "示例: https://gist.githubusercontent.com/chavyleung/9d53fc4809eb41dca5f5923790ec5554/raw/4d8b140ba149c33aa1fc622e93c4035ae74a73bb/chavy.app.sub.simple.json"]
+        }
+      ]
+    },
+    {
       "version": "0.6.7",
       "tags": ["beta"],
       "author": "@chavyleung",
