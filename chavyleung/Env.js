@@ -251,8 +251,8 @@ function Env(name, opts) {
           if (!err && resp) {
             resp.body = body
             resp.statusCode = resp.status
-            callback(err, resp, body)
           }
+          callback(err, resp, body)
         })
       } else if (this.isQuanX()) {
         $task.fetch(opts).then(
@@ -397,7 +397,7 @@ function Env(name, opts) {
     logErr(err, msg) {
       const isPrintSack = !this.isSurge() && !this.isQuanX() && !this.isLoon()
       if (!isPrintSack) {
-        $.log('', `❗️${this.name}, 错误!`, err.message)
+        $.log('', `❗️${this.name}, 错误!`, err)
       } else {
         $.log('', `❗️${this.name}, 错误!`, err.stack)
       }
