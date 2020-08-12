@@ -1,63 +1,37 @@
-<<<<<<< HEAD
-function Env(name) {
-  this.name = name
-  this.logs = []
-  this.isSurge = () => 'undefined' !== typeof $httpClient
-  this.isQuanX = () => 'undefined' !== typeof $task
-  this.log = (...log) => {
-    this.logs = [...this.logs, ...log]
-    if (log) console.log(log.join('\n'))
-    else console.log(this.logs.join('\n'))
-  }
-  this.msg = (title = this.name, subt = '', desc = '') => {
-    if (this.isSurge()) $notification.post(title, subt, desc)
-    if (this.isQuanX()) $notify(title, subt, desc)
-    const _logs = ['', '==============📣系统通知📣==============']
-    if (title) _logs.push(title)
-    if (subt) _logs.push(subt)
-    if (desc) _logs.push(desc)
-    console.log(_logs.join('\n'))
-  }
-  this.getdata = (key) => {
-    if (this.isSurge()) return $persistentStore.read(key)
-    if (this.isQuanX()) return $prefs.valueForKey(key)
-  }
-  this.setdata = (val, key) => {
-    if (this.isSurge()) return $persistentStore.write(val, key)
-    if (this.isQuanX()) return $prefs.setValueForKey(val, key)
-  }
-  this.get = (url, callback) => this.send(url, 'GET', callback)
-  this.wait = (min, max = min) => (resove) => setTimeout(() => resove(), Math.floor(Math.random() * (max - min + 1) + min))
-  this.post = (url, callback) => this.send(url, 'POST', callback)
-  this.send = (url, method, callback) => {
-    if (this.isSurge()) {
-      const __send = method == 'POST' ? $httpClient.post : $httpClient.get
-      __send(url, (error, response, data) => {
-        if (response) {
-          response.body = data
-          response.statusCode = response.status
-        }
-        callback(error, response, data)
+
+function Env(name, opts) {
+  class Http {
+    constructor(env) {
+      this.env = env
+    }
+
+    send(opts, method = 'GET') {
+      opts = typeof opts === 'string' ? { url: opts } : opts
+      let sender = this.get
+      if (method === 'POST') {
+        sender = this.post
+      }
+      return new Promise((resolve, reject) => {
+        sender.call(this, opts, (err, resp, body) => {
+          if (err) reject(err)
+          else resolve(resp)
+        })
       })
     }
-    if (this.isQuanX()) {
-      url.method = method
-      $task.fetch(url).then(
-        (response) => {
-          response.status = response.statusCode
-          callback(null, response, response.body)
-        },
-        (reason) => callback(reason.error, reason, reason)
-      )
+
+    get(opts) {
+      return this.send.call(this.env, opts)
+    }
+
+    post(opts) {
+      return this.send.call(this.env, opts, 'POST')
     }
   }
-  this.done = (value = {}) => $done(value)
-}
-=======
-function Env(name, opts) {
+
   return new (class {
     constructor(name, opts) {
       this.name = name
+      this.http = new Http(this)
       this.data = null
       this.dataFile = 'box.dat'
       this.logs = []
@@ -84,6 +58,41 @@ function Env(name, opts) {
       return 'undefined' !== typeof $loon
     }
 
+    toObj(str, defaultValue = null) {
+      try {
+        return JSON.parse(str)
+      } catch {
+        return defaultValue
+      }
+    }
+
+    toStr(obj, defaultValue = null) {
+      try {
+        return JSON.stringify(obj)
+      } catch {
+        return defaultValue
+      }
+    }
+
+    getjson(key, defaultValue) {
+      let json = defaultValue
+      const val = this.getdata(key)
+      if (val) {
+        try {
+          json = JSON.parse(this.getdata(key))
+        } catch {}
+      }
+      return json
+    }
+
+    setjson(val, key) {
+      try {
+        return this.setdata(JSON.stringify(val), key)
+      } catch {
+        return false
+      }
+    }
+
     getScript(url) {
       return new Promise((resolve) => {
         this.get({ url }, (err, resp, body) => resolve(body))
@@ -106,6 +115,7 @@ function Env(name, opts) {
         this.post(opts, (err, resp, body) => resolve(body))
       }).catch((e) => this.logErr(e))
     }
+
     loaddata() {
       if (this.isNode()) {
         this.fs = this.fs ? this.fs : require('fs')
@@ -159,7 +169,11 @@ function Env(name, opts) {
     lodash_set(obj, path, value) {
       if (Object(obj) !== obj) return obj
       if (!Array.isArray(path)) path = path.toString().match(/[^.[\]]+/g) || []
-      path.slice(0, -1).reduce((a, c, i) => (Object(a[c]) === a[c] ? a[c] : (a[c] = Math.abs(path[i + 1]) >> 0 === +path[i + 1] ? [] : {})), obj)[path[path.length - 1]] = value
+      path
+        .slice(0, -1)
+        .reduce((a, c, i) => (Object(a[c]) === a[c] ? a[c] : (a[c] = Math.abs(path[i + 1]) >> 0 === +path[i + 1] ? [] : {})), obj)[
+        path[path.length - 1]
+      ] = value
       return obj
     }
 
@@ -341,7 +355,9 @@ function Env(name, opts) {
         'S': new Date().getMilliseconds()
       }
       if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (new Date().getFullYear() + '').substr(4 - RegExp.$1.length))
-      for (let k in o) if (new RegExp('(' + k + ')').test(fmt)) fmt = fmt.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ('00' + o[k]).substr(('' + o[k]).length))
+      for (let k in o)
+        if (new RegExp('(' + k + ')').test(fmt))
+          fmt = fmt.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ('00' + o[k]).substr(('' + o[k]).length))
       return fmt
     }
 
