@@ -68,7 +68,7 @@
           <v-menu bottom left v-if="isMainView">
             <template #activator="{ on }">
               <v-btn icon v-on="on">
-                <v-avatar size="26"><img :src="env.icon" /></v-avatar>
+                <v-avatar size="26"><img :src="env.icons[iconEnvThemeIdx]" /></v-avatar>
               </v-btn>
             </template>
             <v-list>
@@ -189,7 +189,6 @@
                 label="透明图标"
                 v-model="box.usercfgs.isTransparentIcons"
                 @change="saveUserCfgs"
-                :disabled="!isDarkMode"
                 :hide-details="isDarkMode"
                 :persistent-hint="true"
                 hint="明亮主题下强制使用彩色图标"
@@ -204,8 +203,39 @@
               <v-switch
                 dense
                 class="mt-0"
-                hide-details
-                label="隐藏悬浮图标"
+                label="勿扰模式"
+                hint="不再发出系统通知 (仍记日志)"
+                persistent-hint
+                v-model="box.usercfgs.isMute"
+                @change="saveUserCfgs"
+              ></v-switch>
+              <v-spacer></v-spacer>
+              <v-btn fab small text>
+                <v-avatar size="32"><v-icon>mdi-volume-off</v-icon></v-avatar>
+              </v-btn>
+            </v-list-item>
+            <v-list-item class="mt-4">
+              <v-switch
+                dense
+                class="mt-0"
+                label="隐藏帮助按钮"
+                hint="隐藏悬浮按钮中的帮忙"
+                persistent-hint
+                v-model="box.usercfgs.isHideHelp"
+                @change="saveUserCfgs"
+              ></v-switch>
+              <v-spacer></v-spacer>
+              <v-btn fab small text @click="window.open(box.syscfgs.boxjs.repo)">
+                <v-avatar size="32"><v-icon>mdi-help</v-icon></v-avatar>
+              </v-btn>
+            </v-list-item>
+            <v-list-item class="mt-4">
+              <v-switch
+                dense
+                class="mt-0"
+                label="隐藏悬浮按钮"
+                hint="右下角悬浮按钮"
+                persistent-hint
                 v-model="box.usercfgs.isHideBoxIcon"
                 @change="saveUserCfgs"
               ></v-switch>
@@ -220,8 +250,9 @@
               <v-switch
                 dense
                 class="mt-0"
-                hide-details
                 label="隐藏我的标题"
+                hint="底栏`我的`二字 (只显示图标)"
+                persistent-hint
                 v-model="box.usercfgs.isHideMyTitle"
                 @change="saveUserCfgs"
               ></v-switch>
@@ -234,38 +265,33 @@
               </v-btn>
             </v-list-item>
             <v-list-item class="mt-4">
-              <v-switch dense class="mt-0" hide-details label="勿扰模式" v-model="box.usercfgs.isMute" @change="saveUserCfgs"></v-switch>
-              <v-spacer></v-spacer>
-              <v-btn fab small text>
-                <v-avatar size="32"><v-icon>mdi-volume-off</v-icon></v-avatar>
-              </v-btn>
-            </v-list-item>
-            <v-list-item class="mt-4">
               <v-switch
                 dense
                 class="mt-0"
-                hide-details
-                label="隐藏帮助按钮"
-                v-model="box.usercfgs.isHideHelp"
-                @change="saveUserCfgs"
-              ></v-switch>
-              <v-spacer></v-spacer>
-              <v-btn fab small text @click="window.open(box.syscfgs.boxjs.repo)">
-                <v-avatar size="32"><v-icon>mdi-help</v-icon></v-avatar>
-              </v-btn>
-            </v-list-item>
-            <v-list-item class="mt-4">
-              <v-switch
-                dense
-                class="mt-0"
-                hide-details
                 label="隐藏刷新按钮"
+                hint="双击悬浮按钮也可刷新页面"
+                persistent-hint
                 v-model="box.usercfgs.isHideRefresh"
                 @change="saveUserCfgs"
               ></v-switch>
               <v-spacer></v-spacer>
               <v-btn fab small text>
                 <v-avatar size="32"><v-icon>mdi-refresh</v-icon></v-avatar>
+              </v-btn>
+            </v-list-item>
+            <v-list-item class="mt-4">
+              <v-switch
+                dense
+                class="mt-0"
+                label="调试模式 (页面)"
+                hint="每次访问都获取最新的页面"
+                persistent-hint
+                v-model="box.usercfgs.isDebugWeb"
+                @change="saveUserCfgs"
+              ></v-switch>
+              <v-spacer></v-spacer>
+              <v-btn fab small text>
+                <v-avatar size="32"><v-icon>mdi-language-html5</v-icon></v-avatar>
               </v-btn>
             </v-list-item>
             <!-- <v-list-item class="mt-4">
@@ -475,7 +501,6 @@
                     ></v-slider>
                     <v-switch
                       v-model="setting.val"
-                      v-bind="setting"
                       class="mt-2"
                       persistent-hint
                       dense
@@ -675,7 +700,7 @@
                   </v-btn>
                 </v-subheader>
                 <template v-for="(sub, subIdx) in appSubs" :key="sub.id">
-                  <v-list-item dense two-line @click="">
+                  <v-list-item dense two-line @click="reloadAppSub(sub)">
                     <v-list-item-avatar v-if="sub.icon"><v-img :src="sub.icon" /></v-list-item-avatar>
                     <v-list-item-avatar v-else color="primary"><v-icon dark>mdi-account</v-icon></v-list-item-avatar>
                     <v-list-item-content>
@@ -896,7 +921,7 @@
                 <v-avatar><img :src="box.syscfgs.boxjs.icons[iconThemeIdx]" /></v-avatar>
               </v-btn>
             </template>
-            <v-btn dark v-if="!box.usercfgs.isHideHelp" fab small color="grey" @click="">
+            <v-btn dark v-if="!box.usercfgs.isHideHelp" fab small color="grey" @click="ui.versionsheet.show = true">
               <v-icon>mdi-help</v-icon>
             </v-btn>
             <v-btn dark fab small color="pink" @click="box.usercfgs.isLeftBoxIcon = !box.usercfgs.isLeftBoxIcon">
@@ -904,17 +929,44 @@
                 {{box.usercfgs.isLeftBoxIcon ? 'mdi-format-horizontal-align-right' : 'mdi-format-horizontal-align-left'}}
               </v-icon>
             </v-btn>
-            <v-btn dark fab small color="indigo" @click="">
+            <!-- <v-btn dark fab small color="indigo" @click="">
               <v-icon>mdi-database-import</v-icon>
             </v-btn>
             <v-btn dark fab small color="success" @click="">
               <v-icon>mdi-export-variant</v-icon>
-            </v-btn>
-            <v-btn dark v-if="!box.usercfgs.isHideRefresh" fab small color="orange" @click="">
+            </v-btn> -->
+            <v-btn dark v-if="!box.usercfgs.isHideRefresh" fab small color="orange" @dblclick="window.location.reload()">
               <v-icon>mdi-refresh</v-icon>
             </v-btn>
           </v-speed-dial>
         </v-fab-transition>
+        <v-bottom-sheet v-model="ui.versionsheet.show" scrollable>
+          <v-card v-if="box.versions">
+            <v-subheader>
+              <v-btn icon small @click="ui.versionsheet.show = false">
+                <v-icon>mdi-help-circle</v-icon>
+              </v-btn>
+              <v-spacer></v-spacer>
+              <v-btn text small v-if="hasNewVersion">新版本</v-btn>
+              <v-spacer></v-spacer>
+              <v-btn icon small @click="ui.versionsheet.show = false">
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </v-subheader>
+            <v-divider></v-divider>
+            <v-card-text style="height: 80%;">
+              <div class="mt-6" v-for="(ver, verIdx) in box.versions">
+                <h2 :class="version === ver.version ? 'primary--text' : undefined">v{{ver.version}}</h2>
+                <div class="pl-4 pt-2" v-for="(note, noteIdx) in ver.notes">
+                  <strong>{{note.name}}</strong>
+                  <ul>
+                    <li v-for="(desc, descIdx) in note.descs">{{desc}}</li>
+                  </ul>
+                </div>
+              </div>
+            </v-card-text>
+          </v-card>
+        </v-bottom-sheet>
         <v-overlay v-model="ui.overlay.show" :opacity="0.8">
           <v-progress-circular indeterminate :value="ui.overlay.val" :size="64" color="primary"></v-progress-circular>
         </v-overlay>
@@ -935,6 +987,7 @@
         data() {
           return {
             ui: {
+              isCors: false,
               path: null,
               bfpath: null,
               view: null,
@@ -947,6 +1000,8 @@
               overlay: { show: false, val: 60 },
               snackbar: { show: false, color: 'primary', msg: '' },
               searchBar: { menuProps: { closeOnContentClick: true } },
+              versionsheet: { show: false },
+              updatesheet: { show: false },
               naviDrawer: { show: false },
               baksSkeleton: { show: true },
               editProfileDialog: { show: false },
@@ -965,6 +1020,19 @@
           // 获取当前版本
           version() {
             return this.box.syscfgs.version
+          },
+          // 判断是否有新版本
+          hasNewVersion() {
+            const curver = this.box.syscfgs.version
+            const vers = this.box.versions
+            if (curver && vers && vers.length > 0) {
+              const lastestVer = vers[0].version
+              return this.compareVersion(lastestVer, curver) > 0
+            }
+          },
+          // 判断是否需要跨域请求
+          isCors() {
+            return this.ui.isCors
           },
           // 判断当前是否`WebApp`
           isWebApp() {
@@ -1037,6 +1105,13 @@
               return this.isTransparentIcons ? 0 : 1
             }
             return 1
+          },
+          // 获取环境图标下标, 透明: 0, 彩色: 1 (默认)
+          iconEnvThemeIdx() {
+            if (this.isWebApp) {
+              return this.isTransparentIcons ? 0 : 1
+            }
+            return this.iconThemeIdx
           },
           isSaveUserCfgs: {
             set(val) {
@@ -1161,7 +1236,7 @@
         watch: {
           'ui.path': {
             handler(newval, oldval) {
-              if (!this.isWebApp) {
+              if (!this.isWebApp && !this.isCors) {
                 history.pushState({ title: 'BoxJs' }, '', newval)
               }
               const [, view, subview] = newval.split('/')
@@ -1200,10 +1275,21 @@
           }
         },
         async created() {
+          // 如果 url 参数中指定的 baseURL, 则后续的请求都请求到指定的域
+          if (window.location.search) {
+            const [, baseURL] = /baseURL=(.*?)(&|$)/.exec(window.location.search)
+            axios.defaults.baseURL = baseURL || ''
+            this.ui.isCors = true
+          }
           // 根据路径跳转视图
-          this.path = location.pathname
+          if (!this.isCors) {
+            const path = location.pathname
+            this.path = path === '/' ? '/app' : path
+          } else {
+            this.path = '/app'
+          }
           // 监听浏览器后退事件
-          window.addEventListener('popstate', () => (this.path = location.pathname), false)
+          window.addEventListener('popstate', () => (this.path = path), false)
           // 获取 BoxJs 数据, 取到数据再渲染页面
           await axios.get('/query/boxdata').then((resp) => (this.box = resp.data))
           // 获取全局备份
@@ -1212,6 +1298,7 @@
           }
           // 获取贡献者列表
           this.getContributors()
+          this.getVersions()
           this.loadTheme()
         },
         methods: {
@@ -1223,6 +1310,8 @@
           back() {
             if (this.view === 'bak' && !this.bfpath) {
               this.path = '/my'
+            } else if (this.view === 'app' && !this.bfpath) {
+              this.path = '/app'
             } else {
               this.path = this.bfpath
             }
@@ -1382,8 +1471,9 @@
             this.ui.overlay.show = true
             const datas = []
             this.curapp.settings.forEach((setting) => {
+              const isNilVal = _.isNil(setting.val)
               const key = setting.id
-              const val = setting.val ? _.toString(setting.val) : ''
+              const val = !isNilVal ? _.toString(setting.val) : ''
               datas.push({ key, val })
             })
             axios
@@ -1449,7 +1539,7 @@
             const curSessions = [{ key, val }]
             const datas = [...session.datas, ...curSessions]
             axios
-              .post('/api/save', [{ key, val }])
+              .post('/api/save', datas)
               .then((resp) => {
                 delete resp.data.usercfgs
                 Object.assign(this.box, resp.data)
@@ -1461,7 +1551,7 @@
             this.ui.overlay.show = true
             const datas = this.curapp.datas
             const data = datas.find((data) => data.key === key)
-            data.val = null
+            data.val = ''
             axios
               .post('/api/save', datas)
               .then((resp) => {
@@ -1629,6 +1719,24 @@
                 this.ui.contributors.push({ id, login, repo, icon })
               })
             })
+          },
+          // 获取版本清单
+          getVersions() {
+            axios.get('/query/versions').then((resp) => {
+              if (resp.data && resp.data.releases) {
+                Object.assign(this.box, { versions: resp.data.releases })
+                if (this.hasNewVersion) {
+                  this.ui.versionsheet.show = true
+                }
+              }
+            })
+          },
+          // 对比版本号
+          compareVersion(v1, v2) {
+            var _v1 = v1.split('.'),
+              _v2 = v2.split('.'),
+              _r = _v1[0] - _v2[0]
+            return _r == 0 && v1 != v2 ? this.compareVersion(_v1.splice(1).join('.'), _v2.splice(1).join('.')) : _r
           }
         }
       })

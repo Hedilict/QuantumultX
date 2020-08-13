@@ -1,6 +1,6 @@
 const $ = new Env('BoxJs')
 
-$.version = '0.7.4'
+$.version = '0.7.8'
 $.versionType = 'beta'
 
 // 存储`用户偏好`
@@ -21,8 +21,7 @@ $.json = $.name // `接口`类请求的响应体
 $.html = $.name // `页面`类请求的响应体
 
 $.web = `https://cdn.jsdelivr.net/gh/chavyleung/scripts@${$.version}/box/chavy.boxjs.html`
-// $.web = `http://192.168.50.109:8080/box/chavy.boxjs.html?_=${new Date().getTime()}`
-// $.web = `http://192.168.8.112:8080/box/chavy.boxjs.html?_=${new Date().getTime()}`
+$.ver = 'https://gitee.com/chavyleung/scripts/raw/master/box/release/box.release.tf.json'
 
 !(async () => {
   // 勿扰模式
@@ -35,6 +34,8 @@ $.web = `https://cdn.jsdelivr.net/gh/chavyleung/scripts@${$.version}/box/chavy.b
   $.isGet = $request.method === 'GET'
   // 请求类型: POST
   $.isPost = $request.method === 'POST'
+  // 请求类型: OPTIONS
+  $.isOptions = $request.method === 'OPTIONS'
 
   // 请求类型: page、api、query
   $.type = 'page'
@@ -48,8 +49,12 @@ $.web = `https://cdn.jsdelivr.net/gh/chavyleung/scripts@${$.version}/box/chavy.b
   // 升级用户数据
   upgradeUserData()
 
+  // 处理预检请求
+  if ($.isOptions) {
+    await handleOptions()
+  }
   // 处理`页面`请求
-  if ($.isPage) {
+  else if ($.isPage) {
     $.type = 'page'
     await handlePage()
   }
@@ -72,19 +77,11 @@ $.web = `https://cdn.jsdelivr.net/gh/chavyleung/scripts@${$.version}/box/chavy.b
  * http://boxjs.com/api/getdata => `/api/getdata`
  */
 function getPath(url) {
-  // 如果以`/`结尾, 先去掉最后一个`/`
-  const fullpath = /\/$/.test(url) ? url.replace(/\/$/, '') : url
-  const domain = getDomain(url)
-  return new RegExp(domain).test(url) ? fullpath.split(domain)[1] : undefined
-}
-
-/**
- * http://boxjs.com/ => `boxjs.com`
- * http://127.0.0.1:9999/ => `127.0.0.1:9999`
- */
-function getDomain(url) {
-  const [, domain] = /https?:\/\/(.*?)\/.*/.exec(url)
-  return domain
+  // 如果以`/`结尾, 去掉最后一个`/`
+  let end = url.lastIndexOf("/") === url.length - 1 ? -1 : undefined
+  // slice第二个参数传 undefined 会直接截到最后
+  // indexOf第二个参数用来跳过前面的 "https://"
+  return url.slice(url.indexOf("/", 8), end)
 }
 
 /**
@@ -97,8 +94,10 @@ function getDomain(url) {
  * 处理`页面`请求
  */
 async function handlePage() {
+  // 调试模式: 是否每次都获取新的页面
+  const isDebugWeb = [true, 'true'].includes($.getdata('@chavy_boxjs_userCfgs.isDebugWeb'))
   const cache = $.getjson($.KEY_web_cache, null)
-  if (cache && cache.version === $.version) {
+  if (!isDebugWeb && cache && cache.version === $.version) {
     $.html = cache.cache
   } else {
     await $.http.get($.web).then(
@@ -126,6 +125,8 @@ async function handleQuery() {
   } else if (/^\/baks/.test(query)) {
     const globalbaks = getGlobalBaks(true)
     $.json = { globalbaks }
+  } else if (/^\/versions$/.test(query)) {
+    await getVersions(true)
   }
 }
 
@@ -155,6 +156,8 @@ async function handleApi() {
     await apiRunScript()
   }
 }
+
+async function handleOptions() {}
 
 /**
  * ===================================
@@ -271,6 +274,21 @@ function getGlobalBaks(isComplete = false) {
     globalbaks.forEach((bak) => delete bak.bak)
     return globalbaks
   }
+}
+/**
+ * 获取版本清单
+ */
+function getVersions() {
+  return $.http.get($.ver).then(
+    (resp) => {
+      try {
+        $.json = $.toObj(resp.body)
+      } catch {
+        $.json = {}
+      }
+    },
+    () => ($.json = {})
+  )
 }
 
 /**
@@ -504,14 +522,46 @@ function upgradeUserData() {
  * ===================================
  */
 function doneBox() {
-  if ($.isPage) donePage()
+  if ($.isOptions) doneOptions()
+  else if ($.isPage) donePage()
   else if ($.isQuery) doneQuery()
   else if ($.isApi) doneApi()
   else $.done()
 }
 
+function getBaseDoneHeaders(mixHeaders = {}) {
+  return Object.assign(
+    {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST,GET,OPTIONS,PUT,DELETE',
+      'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
+    },
+    mixHeaders
+  )
+}
+
+function getHtmlDoneHeaders() {
+  return getBaseDoneHeaders({
+    'Content-Type': 'text/html;charset=UTF-8'
+  })
+}
+function getJsonDoneHeaders() {
+  return getBaseDoneHeaders({
+    'Content-Type': 'text/json; charset=utf-8'
+  })
+}
+
+function doneOptions() {
+  const headers = getBaseDoneHeaders()
+  if ($.isSurge() || $.isLoon()) {
+    $.done({ response: { headers } })
+  } else if ($.isQuanX()) {
+    $.done({ headers })
+  }
+}
+
 function donePage() {
-  const headers = { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'text/html;charset=UTF-8' }
+  const headers = getHtmlDoneHeaders()
   if ($.isSurge() || $.isLoon()) {
     $.done({ response: { status: 200, headers, body: $.html } })
   } else if ($.isQuanX()) {
@@ -521,7 +571,7 @@ function donePage() {
 
 function doneQuery() {
   $.json = $.toStr($.json)
-  const headers = { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'text/json; charset=utf-8' }
+  const headers = getJsonDoneHeaders()
   if ($.isSurge() || $.isLoon()) {
     $.done({ response: { status: 200, headers, body: $.json } })
   } else if ($.isQuanX()) {
@@ -531,7 +581,7 @@ function doneQuery() {
 
 function doneApi() {
   $.json = $.toStr($.json)
-  const headers = { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'text/json; charset=utf-8' }
+  const headers = getJsonDoneHeaders()
   if ($.isSurge() || $.isLoon()) {
     $.done({ response: { status: 200, headers, body: $.json } })
   } else if ($.isQuanX()) {
