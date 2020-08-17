@@ -1,7 +1,54 @@
 {
   "releases": [
     {
-      "version": "0.7.16",
+      "version": "0.7.26",
+      "tags": ["beta"],
+      "author": "@chavyleung",
+      "icon": "https://avatars3.githubusercontent.com/u/29748519",
+      "repo": "https://github.com/chavyleung",
+      "notes": [
+        {
+          "name": "调整",
+          "descs": ["搜索条样式", "搜索操作界面"]
+        }
+      ]
+    },
+    {
+      "version": "0.7.24",
+      "tags": ["beta"],
+      "author": "@chavyleung",
+      "icon": "https://avatars3.githubusercontent.com/u/29748519",
+      "repo": "https://github.com/chavyleung",
+      "notes": [
+        {
+          "name": "修复",
+          "descs": ["解决首屏闪屏问题", "解决图标白边问题", "导入会话报错"]
+        },
+        {
+          "name": "感谢",
+          "descs": ["感谢 @eslint 大佬提供帮助"]
+        }
+      ]
+    },
+    {
+      "version": "0.7.21",
+      "tags": ["beta"],
+      "author": "@chavyleung",
+      "icon": "https://avatars3.githubusercontent.com/u/29748519",
+      "repo": "https://github.com/chavyleung",
+      "notes": [
+        {
+          "name": "新增",
+          "descs": ["一键清空会话数据"]
+        },
+        {
+          "name": "优化",
+          "descs": ["壁纸状态下图标字体颜色为白色", "其他样式优化"]
+        }
+      ]
+    },
+    {
+      "version": "0.7.20",
       "tags": ["beta"],
       "author": "@chavyleung",
       "icon": "https://avatars3.githubusercontent.com/u/29748519",
@@ -9,38 +56,50 @@
       "notes": [
         {
           "name": "优化",
-          "descs": ["首页图标样式"]
+          "descs": ["勿扰模式下, 不再忽略手动执行脚本时发出的系统通知"]
+        },
+        {
+          "name": "新增",
+          "descs": ["可以设置多张壁纸 (偏好设置)"]
+        },
+        {
+          "name": "注意",
+          "descs": ["设置多张壁纸后，在侧栏切换"]
         }
       ]
     },
     {
-      "version": "0.7.14",
+      "version": "0.7.18",
       "tags": ["beta"],
       "author": "@chavyleung",
       "icon": "https://avatars3.githubusercontent.com/u/29748519",
       "repo": "https://github.com/chavyleung",
       "notes": [
         {
-          "name": "修复",
-          "descs": ["首页图标点击无效问题"]
+          "name": "新增",
+          "descs": ["代码编辑器 (入口: 悬浮按钮)"]
+        },
+        {
+          "name": "说明",
+          "descs": ["除了本机运行外", "可以使用 PC 连上 QuanX 的 HTTP Backend", "实现在 PC 上写代码然后发送到 QuanX 执行", "Surge、Loon 同理"]
         }
       ]
     },
     {
-      "version": "0.7.13",
+      "version": "0.7.17",
       "tags": ["beta"],
       "author": "@chavyleung",
       "icon": "https://avatars3.githubusercontent.com/u/29748519",
       "repo": "https://github.com/chavyleung",
       "notes": [
         {
-          "name": "修复",
-          "descs": ["首页图标有轻微位移问题"]
+          "name": "新增",
+          "descs": ["首页壁纸 (偏好设置)"]
         }
       ]
     },
     {
-      "version": "0.7.12",
+      "version": "0.7.16",
       "tags": ["beta"],
       "author": "@chavyleung",
       "icon": "https://avatars3.githubusercontent.com/u/29748519",
@@ -52,7 +111,7 @@
         },
         {
           "name": "修复",
-          "descs": ["帮助页面打开空白"]
+          "descs": ["首页图标点击无效问题", "首页图标有轻微位移问题", "帮助页面打开空白"]
         }
       ]
     },
@@ -65,20 +124,7 @@
       "notes": [
         {
           "name": "新增",
-          "descs": ["首页显示收藏应用"]
-        }
-      ]
-    },
-    {
-      "version": "0.7.10",
-      "tags": ["beta"],
-      "author": "@chavyleung",
-      "icon": "https://avatars3.githubusercontent.com/u/29748519",
-      "repo": "https://github.com/chavyleung",
-      "notes": [
-        {
-          "name": "新增",
-          "descs": ["订阅中的更多按钮可以链接到作者仓库"]
+          "descs": ["首页显示收藏应用", "订阅中的更多按钮可以链接到作者仓库"]
         }
       ]
     },
@@ -96,16 +142,7 @@
         {
           "name": "调整",
           "descs": ["调整加载动态效果"]
-        }
-      ]
-    },
-    {
-      "version": "0.7.8",
-      "tags": ["beta"],
-      "author": "@chavyleung",
-      "icon": "https://avatars3.githubusercontent.com/u/29748519",
-      "repo": "https://github.com/chavyleung",
-      "notes": [
+        },
         {
           "name": "修复",
           "descs": ["boolean 控件偶尔触发键盘问题"]
