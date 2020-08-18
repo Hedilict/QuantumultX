@@ -1,6 +1,91 @@
 {
   "releases": [
     {
+      "version": "0.7.31",
+      "tags": ["beta"],
+      "author": "@chavyleung",
+      "icon": "https://avatars3.githubusercontent.com/u/29748519",
+      "repo": "https://github.com/chavyleung",
+      "notes": [
+        {
+          "name": "调试",
+          "descs": ["支持 vue devtool (侧栏开启调试模式)"]
+        },
+        {
+          "name": "感谢",
+          "descs": ["感谢 @id77 大佬 PR"]
+        }
+      ]
+    },
+    {
+      "version": "0.7.30",
+      "tags": ["beta"],
+      "author": "@chavyleung",
+      "icon": "https://avatars3.githubusercontent.com/u/29748519",
+      "repo": "https://github.com/chavyleung",
+      "notes": [
+        {
+          "name": "优化",
+          "descs": ["首页背景可以一直固定住"]
+        },
+        {
+          "name": "感谢",
+          "descs": ["感谢 @id77 大佬 PR"]
+        }
+      ]
+    },
+    {
+      "version": "0.7.29",
+      "tags": ["beta"],
+      "author": "@chavyleung",
+      "icon": "https://avatars3.githubusercontent.com/u/29748519",
+      "repo": "https://github.com/chavyleung",
+      "notes": [
+        {
+          "name": "代码编辑器",
+          "descs": ["Surge HTTP-API 环境下执行的代码能显示响应内容"]
+        }
+      ]
+    },
+    {
+      "version": "0.7.28",
+      "tags": ["beta"],
+      "author": "@chavyleung",
+      "icon": "https://avatars3.githubusercontent.com/u/29748519",
+      "repo": "https://github.com/chavyleung",
+      "notes": [
+        {
+          "name": "优化",
+          "descs": ["数据后端渲染", "更快更平顺的首页加载", "不闪屏了"]
+        },
+        {
+          "name": "感谢",
+          "descs": ["感谢 @eslint 大佬提供帮助"]
+        }
+      ]
+    },
+    {
+      "version": "0.7.27",
+      "tags": ["beta"],
+      "author": "@chavyleung",
+      "icon": "https://avatars3.githubusercontent.com/u/29748519",
+      "repo": "https://github.com/chavyleung",
+      "notes": [
+        {
+          "name": "优化",
+          "descs": ["首页样式", "操作体验"]
+        },
+        {
+          "name": "首页",
+          "descs": ["顶栏透明", "可以隐藏顶栏", "顶栏可以固定或跟随滚动"]
+        },
+        {
+          "name": "悬浮按钮",
+          "descs": ["增加搜索入口"]
+        }
+      ]
+    },
+    {
       "version": "0.7.26",
       "tags": ["beta"],
       "author": "@chavyleung",
