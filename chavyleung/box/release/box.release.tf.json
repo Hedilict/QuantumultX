@@ -1,6 +1,116 @@
 {
   "releases": [
     {
+      "version": "0.7.41",
+      "tags": ["beta"],
+      "author": "@chavyleung",
+      "icon": "https://avatars3.githubusercontent.com/u/29748519",
+      "repo": "https://github.com/chavyleung",
+      "msg": "更新[BoxJs TF]: 修复顶栏隐藏时图标没往上挪, 悬浮按钮上滑切壁纸, 壁纸模式隐藏悬浮按钮",
+      "notes": [
+        {
+          "name": "优化",
+          "descs": ["壁纸模式会把悬浮按钮也隐藏起来"]
+        },
+        {
+          "name": "修复",
+          "descs": ["顶栏隐藏时图标没有往上挪"]
+        },
+        {
+          "name": "悬浮按钮手势",
+          "descs": ["上滑: 重渲染&切换壁纸", "左滑: 悬浮按钮左靠", "右滑: 悬浮按钮右靠", "下滑: 切换壁纸模式"]
+        },
+        {
+          "name": "说明",
+          "descs": ["壁纸模式下: 下滑取消壁纸模式", "非壁纸模式: 下滑显示\\隐藏顶栏"]
+        }
+      ]
+    },
+    {
+      "version": "0.7.40",
+      "tags": ["beta"],
+      "author": "@chavyleung",
+      "icon": "https://avatars3.githubusercontent.com/u/29748519",
+      "repo": "https://github.com/chavyleung",
+      "msg": "更新[BoxJs TF]: 新增壁纸模式、悬浮按钮手势",
+      "notes": [
+        {
+          "name": "新增",
+          "descs": ["壁纸模式", "悬浮按钮手势"]
+        },
+        {
+          "name": "悬浮按钮手势",
+          "descs": ["上滑: 刷新页面 (效果同双击)", "左滑: 悬浮按钮左靠", "右滑: 悬浮按钮右靠", "下滑: 切换壁纸模式"]
+        }
+      ]
+    },
+    {
+      "version": "0.7.39",
+      "tags": ["beta"],
+      "author": "@chavyleung",
+      "icon": "https://avatars3.githubusercontent.com/u/29748519",
+      "repo": "https://github.com/chavyleung",
+      "msg": "更新[BoxJs TF]: 修复部分情况下拉出顶栏事件失效问题",
+      "notes": [
+        {
+          "name": "修复",
+          "descs": ["部分情况下拉出顶栏事件失效问题"]
+        },
+        {
+          "name": "优化",
+          "descs": ["原来顶部的加载条移到底栏上方"]
+        }
+      ]
+    },
+    {
+      "version": "0.7.38",
+      "tags": ["beta"],
+      "author": "@chavyleung",
+      "icon": "https://avatars3.githubusercontent.com/u/29748519",
+      "repo": "https://github.com/chavyleung",
+      "msg": "更新[BoxJs TF]: 新增 Surge HTTP-API 环境下运行脚本会显示运行结果",
+      "notes": [
+        {
+          "name": "新增",
+          "descs": ["Surge HTTP-API 环境下运行脚本会显示运行结果"]
+        },
+        {
+          "name": "优化",
+          "descs": ["页面样式"]
+        },
+        {
+          "name": "移除",
+          "descs": ["顶栏跟随滚动"]
+        }
+      ]
+    },
+    {
+      "version": "0.7.37",
+      "tags": ["beta"],
+      "author": "@chavyleung",
+      "icon": "https://avatars3.githubusercontent.com/u/29748519",
+      "repo": "https://github.com/chavyleung",
+      "msg": "更新[BoxJs TF]: 应用标题加阴影, 优化调试代码, 单击首页重渲染壁纸",
+      "notes": [
+        {
+          "name": "优化",
+          "descs": ["应用标题加阴影"]
+        },
+        {
+          "name": "调试",
+          "descs": ["优化代码"]
+        },
+        {
+          "name": "新增",
+          "descs": ["单击首页回到顶部, 再单击一次重新渲染壁纸"]
+        },
+        {
+          "name": "壁纸",
+          "descs": ["无背景,", "随机,https://uploadbeta.com/api/pictures/random", "推女郎,https://uploadbeta.com/api/pictures/random/?key=推女郎", "性感,https://uploadbeta.com/api/pictures/random/?key=性感", "车模,https://uploadbeta.com/api/pictures/random/?key=车模", "美腿,https://uploadbeta.com/api/pictures/random/?key=美腿", "美女,https://uploadbeta.com/api/pictures/random/?key=美女", "手机妹子,http://api.btstu.cn/sjbz/zsy.php", "手机美女,http://api.btstu.cn/sjbz/?m_lx=suiji"]
+        }
+      ]
+    },
+    {
       "version": "0.7.36",
       "tags": ["beta"],
       "author": "@chavyleung",
