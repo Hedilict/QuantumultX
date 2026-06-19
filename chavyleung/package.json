@@ -9,7 +9,7 @@
   "author": "Chavy <chavyleung@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "crypto-js": "^4.0.0",
+    "crypto-js": "^4.2.0",
     "got": "^11.8.5",
     "http-server": "^0.12.3",
     "tough-cookie": "^4.0.0"
